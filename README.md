@@ -4,7 +4,7 @@ This repository aims to develop a methodology to clean the PIMUS network model f
 
 ## Overall methodology
 
-![methology](imgs/pipeline.jpg)
+![methology](imgs/methodology.jpg)
 
 ## Run locally with Nvidia GPU
 
