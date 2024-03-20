@@ -1,6 +1,6 @@
-# traffic-conflicts-analysis
+# Traffic conflict analysis using computer vision (TCA-CV)
 
-This repository aims to develop a methodology to clean the PIMUS network model for the GTAModel.
+This repository aims to develop a methodology estimate the severity of traffic conflicts using computer vision.
 
 ## Overall methodology
 
@@ -20,6 +20,3 @@ conda activate rapids
 
 ## References
 
-Huge shoutout goes to RafalKucharskiPK for creating the net to csv converter.
-
- - [visum_to_pandas](https://github.com/RafalKucharskiPK/visum_to_pandas.git)
