@@ -1,0 +1,6 @@
+fastapi
+ngsildclient
+uvicorn
+pymongo==4.3.3
+shapely
+opencv-python

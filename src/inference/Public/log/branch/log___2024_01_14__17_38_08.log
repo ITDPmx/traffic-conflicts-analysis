@@ -1,0 +1,54 @@
+---------------------------------
+[2024-01-14 17:38:08][INFO][200]:La conexion [dbconn_standard] esta desabilitada en el archivo .config
+---------------------------------
+[2024-01-14 17:38:08][INFO][200]:Iniciando ...
+---------------------------------
+[2024-01-14 17:38:08][INFO][200]:Se van a inferir 39 entidades
+---------------------------------
+[2024-01-14 17:40:14][EXCEPTION][500]:PYTHON-EXCEPTION:
+
+>>>>>>>>>>>>>>>[TRACEBACK]<<<<<<<<<<<<<<<
+
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/main.py", line 10, in <module>
+    ProjectDirector.go( sys.argv )
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 141, in go
+    ProjectDirector().setFlux( argv )
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 121, in setFlux
+    asyncio.run(self.__play(
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/base_events.py", line 634, in run_until_complete
+    self.run_forever()
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/base_events.py", line 601, in run_forever
+    self._run_once()
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/base_events.py", line 1905, in _run_once
+    handle._run()
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 82, in __play
+    person_entities = await infer.create_person_entities(camera_entities)
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/App/InferProcedures/InferProcedures.py", line 55, in create_person_entities
+    filevideo = self.download_video(camera['bucket']['value'], camera['file']['value'])
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/App/InferProcedures/InferProcedures.py", line 72, in download_video
+    self.s3_client.download_file(bucket, file, new_path)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/boto3/s3/inject.py", line 190, in download_file
+    return transfer.download_file(
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/boto3/s3/transfer.py", line 326, in download_file
+    future.result()
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/s3transfer/futures.py", line 106, in result
+    raise e
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/s3transfer/futures.py", line 103, in result
+    return self._coordinator.result()
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/s3transfer/futures.py", line 261, in result
+    self._done_event.wait(MAXINT)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/threading.py", line 581, in wait
+    signaled = self._cond.wait(timeout)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/threading.py", line 312, in wait
+    waiter.acquire()
+
+>>>>>>>>>>>>>>[ERROR_DESC]<<<<<<<<<<<<<<<
+
+  [KeyboardInterrupt]:
+
+>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<
+

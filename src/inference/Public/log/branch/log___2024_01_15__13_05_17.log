@@ -1,0 +1,28 @@
+---------------------------------
+[2024-01-15 13:05:17][INFO][200]:La conexion [dbconn_standard] esta desabilitada en el archivo .config
+---------------------------------
+[2024-01-15 13:05:17][INFO][200]:Iniciando ...
+---------------------------------
+[2024-01-15 13:05:18][EXCEPTION][500]:PYTHON-EXCEPTION:
+
+>>>>>>>>>>>>>>>[TRACEBACK]<<<<<<<<<<<<<<<
+
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/main.py", line 10, in <module>
+    ProjectDirector.go( sys.argv )
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 143, in go
+    ProjectDirector().setFlux( argv )
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 123, in setFlux
+    asyncio.run(self.__play(
+  File "/opt/anaconda3/lib/python3.9/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/opt/anaconda3/lib/python3.9/asyncio/base_events.py", line 647, in run_until_complete
+    return future.result()
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 79, in __play
+    print(camera_entities[0]['bucket'])
+
+>>>>>>>>>>>>>>[ERROR_DESC]<<<<<<<<<<<<<<<
+
+  [KeyError]:'bucket'
+
+>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<
+

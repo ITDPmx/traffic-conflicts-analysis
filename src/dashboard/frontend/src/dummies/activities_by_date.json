@@ -1,0 +1,27 @@
+{
+    "activities": [   
+        {
+            "taken_at": "2023-05-01",
+            "counts": {
+
+                "walking": 2,
+                "reading": 1
+            }
+        },
+        {   
+            "taken_at": "2023-05-02",
+            "counts": {
+                "running": 2,
+                "playing": 1
+            } 
+        },
+        {   "taken_at": "2023-05-03",
+            "counts": {
+                "running": 2,
+                "playing": 1,
+                "reading": 3,
+                "walking": 5
+            }
+        }
+    ]
+}

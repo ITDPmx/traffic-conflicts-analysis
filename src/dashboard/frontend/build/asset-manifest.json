@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.js": "./static/js/main.e9421bc3.js",
+    "static/js/787.bb1b18fb.chunk.js": "./static/js/787.bb1b18fb.chunk.js",
+    "static/media/distritotec.png": "./static/media/distritotec.27a71d18bdb81c0e8745.png",
+    "static/media/tec.png": "./static/media/tec.617c8cdd23847a82e52b.png",
+    "index.html": "./index.html",
+    "main.e9421bc3.js.map": "./static/js/main.e9421bc3.js.map",
+    "787.bb1b18fb.chunk.js.map": "./static/js/787.bb1b18fb.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.e9421bc3.js"
+  ]
+}
