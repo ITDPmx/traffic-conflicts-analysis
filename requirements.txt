@@ -1,0 +1,9 @@
+python-dateutil
+pymysql
+#psycopg2==2.9.1
+psycopg2-binary
+cx-Oracle
+SQLAlchemy
+pandas
+opencv-python
+pytest
