@@ -1,7 +1,7 @@
 "use client";
 
-import { ClientSafeProvider, LiteralUnion, signIn } from "next-auth/react";
-import { BuiltInProviderType } from "next-auth/providers/index";
+import { type ClientSafeProvider, type LiteralUnion, signIn } from "next-auth/react";
+import { type BuiltInProviderType } from "next-auth/providers/index";
 
 export const SignInButtons = ({
   providers,
@@ -11,8 +11,6 @@ export const SignInButtons = ({
     ClientSafeProvider
   > | null;
 }) => {
-  console.log(providers);
-
   if (!providers) {
     return <></>;
   }

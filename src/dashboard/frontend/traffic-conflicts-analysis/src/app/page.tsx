@@ -1,9 +1,14 @@
 import { getProviders } from "next-auth/react";
 
 import { SignInButtons } from "~/app/_components/signin-buttons";
+import { RedirectDashboard } from "~/app/_components/redirect-dashboard";
+import { getServerAuthSession } from "~/server/auth";
 
 export default async function Home() {
+
+  const session = await getServerAuthSession();
   const providers = await getProviders();
+
   return (
     <main className="flex h-screen w-screen flex-row">
       <div className="w-full bg-[url('/Interseccion.png')] bg-cover">
@@ -31,6 +36,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
+      <RedirectDashboard session={session}/>
     </main>
   );
 }
