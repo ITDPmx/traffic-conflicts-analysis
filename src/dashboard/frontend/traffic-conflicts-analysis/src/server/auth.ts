@@ -13,7 +13,11 @@ import { db } from "~/server/db";
 /**
  * User roles for access control.
  */
-export type UserRole = "USER" | "ADMIN";
+
+// User -> anyone that uses oauth
+// Member -> User whose role was modified by an admin.
+// Admin -> Established directly by DB or another admin
+export type UserRole = "USER" | "MEMBER" | "ADMIN";
 
 
 /**
@@ -49,7 +53,7 @@ export const authOptions: NextAuthOptions = {
       user: {
         ...session.user,
         id: user.id,
-        role: user.role,
+        role: user.role as UserRole,
       },
     }),
 
