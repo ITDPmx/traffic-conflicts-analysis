@@ -7,7 +7,7 @@ export const RedirectDashboard = ({session}: {session: Session | null}) => {
     const pathname = usePathname();  
 
     if (session && pathname === '/'){
-        redirect('/test');
+        redirect('/dashboard/inicio');
     }
   return (
     <>

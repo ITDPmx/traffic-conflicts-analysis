@@ -26,6 +26,22 @@ model Post {
     @@index([name])
 }
 
+model Video {
+    id     String  @id @default(cuid())
+    userId String
+    name   String
+    time   Int
+    result Result?
+    user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Result {
+    id         String @id @default(cuid())
+    videoId    String @unique
+    video      Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+    resultLink String
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -61,9 +77,12 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    registered    DateTime  @default(now())
+    lastLogin     DateTime  @default(now())
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    video         Video[]
 }
 
 model VerificationToken {

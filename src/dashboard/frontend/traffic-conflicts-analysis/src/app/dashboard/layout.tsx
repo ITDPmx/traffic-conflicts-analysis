@@ -16,13 +16,14 @@ export default async function DashboardLayout({
 }) {
   // If the user is not authenticated, redirect to the home page
   const session = await getServerAuthSession();
+
   if (!session) {
     redirect("/");
   }
 
   return (
     <>
-      <Navbar />
+      <Navbar role={session.user.role}/>
       <div className="mt-20">{children}</div>
     </>
   );
