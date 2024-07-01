@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+import { CircularProgressbar } from "react-circular-progressbar";
+import { api } from "~/trpc/react";
+import "react-circular-progressbar/dist/styles.css";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  
+  const [isUploading, setIsUploading] = useState(false);
+
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -14,10 +17,33 @@ export default function Home() {
       videoRef.current.src = URL.createObjectURL(selectedFile);
       videoRef.current.load(); // This ensures the video is reloaded
       videoRef.current.onerror = () => {
-        console.error('Error loading video:', selectedFile.name);
+        console.error("Error loading video:", selectedFile.name);
       };
     }
   }, [selectedFile]);
+
+  const getSignedUrl = api.video.getSignedUrl.useMutation({
+    onSuccess: async (presignedUrl) => {
+      setIsUploading(true);
+      const uploadResponse = await fetch(presignedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": selectedFile?.type ?? "",
+        },
+        body: selectedFile,
+      });
+      setIsUploading(false);
+
+      if (uploadResponse.ok) {
+        alert("El archivo se subió correctamente.");
+      } else {
+        alert("Hubo un error al subir el archivo.");
+      }
+    },
+    onError: (error) => {
+      alert("Error al conseguir URL:" + error.message);
+    },
+  });
 
   const supportedExtensions = ["mp4", "mov", "avi", "mkv", "webm"];
 
@@ -56,17 +82,39 @@ export default function Home() {
               </p>
             </div>
 
-            <button className="rounded-[1.7em] bg-azul px-12 py-3 text-2xl font-bold text-white">
+            <button
+              className="rounded-[1.7em] bg-azul px-12 py-3 text-2xl font-bold text-white"
+              onClick={async () => {
+                if (
+                  selectedFile &&
+                  isExtensionSupported(selectedFile.name, supportedExtensions)
+                ) {
+                  getSignedUrl.mutate({ name: selectedFile.name });
+                }
+              }}
+            >
               Procesar
             </button>
           </div>
+          {isUploading && (
+            <div className="mx-auto flex flex-row flex-wrap items-center gap-x-4 gap-y-5">
+              <BeatLoader color="#0033a0" />
+              <p className="text-2xl font-bold">
+                Subiendo archivo, por favor espera.
+              </p>
+            </div>
+          )}
           <div>
-            {selectedFile && isExtensionSupported(selectedFile.name, supportedExtensions) ? (
-              <video ref={videoRef} width="800" controls className="m-auto"/>
+            {selectedFile &&
+            isExtensionSupported(selectedFile.name, supportedExtensions) ? (
+              <video ref={videoRef} width="800" controls className="m-auto" />
             ) : (
-              <img alt="Image Placeholder" className="m-auto w-[800px]" src="/Preview.png"/>
-            )
-            }
+              <img
+                alt="Image Placeholder"
+                className="m-auto w-[800px]"
+                src="/Preview.png"
+              />
+            )}
           </div>
         </div>
       </div>
