@@ -56,6 +56,20 @@ export const videoRouter = createTRPCRouter({
     const finalName = `${input.name.split(".")[0] + now.toISOString()}.mp4`;
     return await generatePresignedUrl({ name: finalName });
   }),
+
+  updateProgress: adminProcedure
+    .input(z.object({ videoId: z.string(), progress: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.video.update({
+        where: {
+          id: input.videoId,
+        },
+        data: {
+          progress: input.progress,
+        },
+      });
+    }),
+  
 });
 
 const generatePresignedUrl = async ({ name }: { name: string }) => {

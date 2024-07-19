@@ -33,6 +33,7 @@ model Video {
     time   Int
     result Result?
     user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    progress Int
 }
 
 model Result {
@@ -40,6 +41,7 @@ model Result {
     videoId    String @unique
     video      Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
     resultLink String
+    progress   Int
 }
 
 // Necessary for Next auth

@@ -26,7 +26,7 @@ import { db } from "~/server/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createTRPCContext = async (opts: { headers: Headers | null }) => {
   const session = await getServerAuthSession();
 
   return {
@@ -56,6 +56,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
     };
   },
 });
+
 
 /**
  * Create a server-side caller.

@@ -1,4 +1,9 @@
-Crowd counting TODO
+# Crowd counting TODO
+
+- [x] Levantar backend para base de datos AWS
+- [] Implementar backend para subir progreso
+- [] Implementar github actions para el despliegue
+- [] Guardar en las tablas
 
 - [] Terminar frontend
 - [x] Poder subir archivos .mp4, validaciones básicas
@@ -9,4 +14,6 @@ Crowd counting TODO
 - [] Funcionalidad de modificar administradores
 
 
-Approach: Use presigned url and upload from frontend, https://dev.to/thesohailjafri/how-to-use-aws-s3-pre-signed-urls-to-upload-and-download-files-4p53
+### Dudas:
+
+1. El archivo .csv que me pasó de las features ya es el final?
