@@ -1,15 +1,19 @@
 from pydantic import BaseModel
 from typing import Dict
 
+
 class Cell(BaseModel):
     row: int
     col: int
 
+
 class ColPosition(BaseModel):
     col: int
 
+
 class Metadata(BaseModel):
     info: Dict[str, Cell]
+
 
 cell_locations = {
     "observer": Cell(row=2, col=6),
@@ -50,3 +54,13 @@ event_details_offset = {
     "entity3": 21,
     "event_description": 25,
 }
+
+def validate_metadata(info: dict, metadata: Metadata):
+    for key in info.keys():
+        if info[key] is not None and key not in metadata.info:
+            raise Exception(f"Metadata for {key} not found.")
+        
+def validate_offsets(info: dict, offsets: dict):
+    for key in info.keys():
+        if info[key] is not None and key not in offsets:
+            raise Exception(f"Key {key} not found in offset.")

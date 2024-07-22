@@ -9,7 +9,7 @@ from metadata import Metadata, header_metadata
 
 class EntityDetails(BaseModel):
     user_id: int
-    sex_id: Optional[str]
+    sex_id: Optional[int]
     age: Optional[int]
     velocity: float
     colission_point_distance: float
@@ -27,28 +27,28 @@ class SmallEntityDetails(BaseModel):
  
 class Event(BaseModel):
     video_name: str
-    video_section: Optional[str]
+    video_section: str = ""
     video_minute: int
     event_hour: str
     event_description: str
     entity1: EntityDetails
     entity2: EntityDetails
-    entity3: SmallEntityDetails
+    entity3: SmallEntityDetails = None
     
 class HeaderData(BaseModel):
-    observer: Optional[str]
     city: str
-    intersection: str
-    weather: str
-    date: str
+    intersection: str 
+    date: str 
     time_start: str
     time_end: str
-    sunny: Optional[bool]
-    dry: Optional[bool]
-    cloudy: Optional[bool]
-    humid: Optional[bool]
-    surface: Optional[str]
-    raining: Optional[bool]
+    observer: str = ""
+    weather: str = None
+    sunny: bool = False
+    dry: bool = False
+    cloudy: bool = False
+    humid: bool = False
+    surface: str = None
+    raining: bool = False
 
 
 def set_header(workbook: Workbook, header_data: HeaderData, header_metadata: Metadata):
