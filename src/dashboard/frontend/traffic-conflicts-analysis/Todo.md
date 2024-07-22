@@ -1,7 +1,7 @@
 # Crowd counting TODO
 
 - [x] Levantar backend para base de datos AWS
-- [] Implementar backend para subir progreso
+- [x] Implementar backend para subir progreso
 - [] Implementar github actions para el despliegue
 - [] Guardar en las tablas
 

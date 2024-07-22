@@ -2,6 +2,9 @@
 .vscode/
 .idea/
 
+# Excel metadata
+.~lock*
+
 # Mac/OSX
 .DS_Store
 
