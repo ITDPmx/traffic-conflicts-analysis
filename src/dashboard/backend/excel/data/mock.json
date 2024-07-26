@@ -40,6 +40,84 @@
         "evasion_id": 2,
         "evasion_possibility_id": 0
       }
+    }, {
+      "video_name": "video1.mp4",
+      "video_section": "1",
+      "video_minute": 10,
+      "event_hour": "10:10",
+      "event_description": "Carro se pasa el alto",
+      "entity1": {
+        "user_id": 1,
+        "sex_id": 1,
+        "age": 30,
+        "velocity": 60,
+        "colission_point_distance": 10,
+        "tc_value": 0.5,
+        "evasion_id": 1,
+        "evasion_possibility_id": 1
+      },
+      "entity2": {
+        "user_id": 2,
+        "sex_id": 2,
+        "age": 30,
+        "velocity": 100,
+        "colission_point_distance": 4,
+        "tc_value": 4.3,
+        "evasion_id": 2,
+        "evasion_possibility_id": 0
+      }
+    }, {
+      "video_name": "video1.mp4",
+      "video_section": "1",
+      "video_minute": 10,
+      "event_hour": "10:10",
+      "event_description": "Carro se pasa el alto",
+      "entity1": {
+        "user_id": 1,
+        "sex_id": 1,
+        "age": 30,
+        "velocity": 60,
+        "colission_point_distance": 10,
+        "tc_value": 0.5,
+        "evasion_id": 1,
+        "evasion_possibility_id": 1
+      },
+      "entity2": {
+        "user_id": 2,
+        "sex_id": 2,
+        "age": 30,
+        "velocity": 100,
+        "colission_point_distance": 4,
+        "tc_value": 4.3,
+        "evasion_id": 2,
+        "evasion_possibility_id": 0
+      }
+    }, {
+      "video_name": "video1.mp4",
+      "video_section": "1",
+      "video_minute": 10,
+      "event_hour": "10:10",
+      "event_description": "Carro se pasa el alto",
+      "entity1": {
+        "user_id": 1,
+        "sex_id": 1,
+        "age": 30,
+        "velocity": 60,
+        "colission_point_distance": 10,
+        "tc_value": 0.5,
+        "evasion_id": 1,
+        "evasion_possibility_id": 1
+      },
+      "entity2": {
+        "user_id": 2,
+        "sex_id": 2,
+        "age": 30,
+        "velocity": 100,
+        "colission_point_distance": 4,
+        "tc_value": 4.3,
+        "evasion_id": 2,
+        "evasion_possibility_id": 0
+      }
     }
   ]
 }

@@ -78,9 +78,22 @@ def add_events(workbook: Workbook, events: list[Event]):
 
 def get_template():
     path = "data/template.xlsx"
+    # path = "data/output_test.xlsx"
     wb_obj = openpyxl.load_workbook(path) 
     return wb_obj
 
+
+def get_starting_row(workbook: Workbook):
+    sheet = workbook.active
+    
+    for i in range(1, sheet.max_row):
+                
+        if sheet.cell(row=i, column=1).value is None:
+            return i
+        elif sheet.cell(row=i, column=1).merged_cells:
+            for merged_range in sheet.merged_cells.ranges:
+                if i >= merged_range.min_row and i <= merged_range.max_row:
+                    return merged_range.max_row
 
 def test():
     
@@ -92,13 +105,14 @@ def test():
     header_data = HeaderData(**header_data)
     
     wb = get_template()
+    # print(get_starting_row(wb))
     
     set_header(wb, header_data, header_metadata)
     
     t = test_data["events"][0]
     
-    event = Event(**test_data["events"][0])
-    add_events(wb, [event])
+    events = [Event(**event) for event in test_data["events"]]
+    add_events(wb, events)
     
     wb.save(filename="data/output_test.xlsx")
     
