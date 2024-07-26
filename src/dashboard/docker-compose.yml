@@ -1,0 +1,25 @@
+# 
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    volumes:
+     - traffic-volume:/var/lib/postgresql/data
+    env_file: "docker.env"
+    ports:
+      - "4400:5432"
+
+  # For testing with Adminer
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
+
+volumes:
+  traffic-volume:

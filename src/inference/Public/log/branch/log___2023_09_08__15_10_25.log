@@ -1,0 +1,42 @@
+---------------------------------
+[2023-09-08 15:10:25][INFO][200]:La conexion [dbconn_standard] esta desabilitada en el archivo .config
+---------------------------------
+[2023-09-08 15:10:25][INFO][200]:Iniciando ...
+---------------------------------
+[2023-09-08 15:10:26][INFO][200]:Se van a inferir 2 entidades
+---------------------------------
+[2023-09-08 15:10:27][EXCEPTION][500]:PYTHON-EXCEPTION:
+
+>>>>>>>>>>>>>>>[TRACEBACK]<<<<<<<<<<<<<<<
+
+  File "/Users/l03542515/Documents/crowd-counting/src/inference/main.py", line 10, in <module>
+    ProjectDirector.go( sys.argv )
+  File "/Users/l03542515/Documents/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 138, in go
+    ProjectDirector().setFlux( argv )
+  File "/Users/l03542515/Documents/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 118, in setFlux
+    asyncio.run(self.__play(
+  File "/opt/anaconda3/lib/python3.9/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/opt/anaconda3/lib/python3.9/asyncio/base_events.py", line 647, in run_until_complete
+    return future.result()
+  File "/Users/l03542515/Documents/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 81, in __play
+    person_entities = await infer.create_person_entities(camera_entities)
+  File "/Users/l03542515/Documents/crowd-counting/src/inference/System/App/InferProcedures/InferProcedures.py", line 58, in create_person_entities
+    entities = await self.orion.infer(camera, decryptedF)
+  File "/Users/l03542515/Documents/crowd-counting/src/inference/System/App/OrionProcedures/OrionProcedures.py", line 105, in infer
+    entities = self.track_video(filevideo, model, time)
+  File "/Users/l03542515/Documents/crowd-counting/src/inference/System/App/OrionProcedures/OrionProcedures.py", line 121, in track_video
+    video = cv2.VideoCapture(url)
+
+>>>>>>>>>>>>>>[ERROR_DESC]<<<<<<<<<<<<<<<
+
+  [error]:OpenCV(4.7.0) :-1: error: (-5:Bad argument) in function 'VideoCapture'
+> Overload resolution failed:
+>  - Can't convert object to 'str' for 'filename'
+>  - VideoCapture() missing required argument 'apiPreference' (pos 2)
+>  - Argument 'index' is required to be an integer
+>  - VideoCapture() missing required argument 'apiPreference' (pos 2)
+
+
+>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<
+

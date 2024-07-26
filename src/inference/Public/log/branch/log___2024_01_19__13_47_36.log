@@ -1,0 +1,84 @@
+---------------------------------
+[2024-01-19 13:47:36][INFO][200]:La conexion [dbconn_standard] esta desabilitada en el archivo .config
+---------------------------------
+[2024-01-19 13:47:36][INFO][200]:Iniciando ...
+---------------------------------
+[2024-01-19 13:47:36][INFO][200]:Se van a inferir 9 entidades
+---------------------------------
+[2024-01-19 13:48:17][EXCEPTION][500]:PYTHON-EXCEPTION:
+
+>>>>>>>>>>>>>>>[TRACEBACK]<<<<<<<<<<<<<<<
+
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/main.py", line 10, in <module>
+    ProjectDirector.go( sys.argv )
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 143, in go
+    ProjectDirector().setFlux( argv )
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 123, in setFlux
+    asyncio.run(self.__play(
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/base_events.py", line 634, in run_until_complete
+    self.run_forever()
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/base_events.py", line 601, in run_forever
+    self._run_once()
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/base_events.py", line 1905, in _run_once
+    handle._run()
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/Director/ProjectDirector.py", line 84, in __play
+    person_entities = await infer.create_person_entities(camera_entities)
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/App/InferProcedures/InferProcedures.py", line 80, in create_person_entities
+    entities.append( self.infer(camera, decryptedF))
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/App/InferProcedures/InferProcedures.py", line 160, in infer
+    entities = self.track_video(filevideo, model, time)
+  File "/Users/l03542515/Documents/demo_crowd/crowd-counting/src/inference/System/App/InferProcedures/InferProcedures.py", line 113, in track_video
+    results = model.track(source=frame, persist=True, classes=0, show=True)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/yolo/engine/model.py", line 276, in track
+    return self.predict(source=source, stream=stream, **kwargs)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/yolo/engine/model.py", line 253, in predict
+    return self.predictor.predict_cli(source=source) if is_cli else self.predictor(source=source, stream=stream)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/yolo/engine/predictor.py", line 184, in __call__
+    return list(self.stream_inference(source, model))  # merge list of Result into one
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/utils/_contextlib.py", line 35, in generator_context
+    response = gen.send(None)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/yolo/engine/predictor.py", line 240, in stream_inference
+    preds = self.model(im, augment=self.args.augment, visualize=visualize)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/nn/autobackend.py", line 314, in forward
+    y = self.model(im, augment=augment, visualize=visualize) if augment or visualize else self.model(im)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/nn/tasks.py", line 213, in forward
+    return self._forward_once(x, profile, visualize)  # single-scale inference, train
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/nn/tasks.py", line 64, in _forward_once
+    x = m(x)  # run
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/nn/modules/block.py", line 182, in forward
+    y.extend(m(y[-1]) for m in self.m)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/nn/modules/block.py", line 182, in <genexpr>
+    y.extend(m(y[-1]) for m in self.m)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/nn/modules/block.py", line 284, in forward
+    return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/ultralytics/nn/modules/conv.py", line 43, in forward_fuse
+    return self.act(self.conv(x))
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/nn/modules/activation.py", line 396, in forward
+    return F.silu(input, inplace=self.inplace)
+  File "/opt/anaconda3/envs/ultra/lib/python3.9/site-packages/torch/nn/functional.py", line 2058, in silu
+    return torch._C._nn.silu_(input)
+
+>>>>>>>>>>>>>>[ERROR_DESC]<<<<<<<<<<<<<<<
+
+  [KeyboardInterrupt]:
+
+>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<
+
