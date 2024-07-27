@@ -18,10 +18,10 @@ const VIDEO_DIR = "videos";
 // Create an S3 client service object
 const expiration = 3600; // The expiration time of the presigned URL (in seconds)
 const s3Client = new S3Client({
-  region: env.AWS_REGION,
+  region: env.IAWS_REGION,
   credentials: {
-    accessKeyId: env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: env.IAWS_ACCESS_KEY_ID,
+    secretAccessKey: env.IAWS_SECRET_ACCESS_KEY,
   },
 });
 
@@ -74,7 +74,7 @@ export const videoRouter = createTRPCRouter({
 
 const generatePresignedUrl = async ({ name }: { name: string }) => {
   const command = new PutObjectCommand({
-    Bucket: env.AWS_BUCKET_NAME,
+    Bucket: env.IAWS_BUCKET_NAME,
     Key: path.join(VIDEO_DIR, name)
   });
   try {
