@@ -13,7 +13,3 @@
 - [] Backend para formatear archivos .json a .excel
 - [] Funcionalidad de modificar administradores
 
-
-### Dudas:
-
-1. El archivo .csv que me pasó de las features ya es el final?

@@ -22,7 +22,7 @@ export default async function Home() {
                 Video
               </th>
               <th scope="col" className="px-6 py-3 text-xl text-azul normal-case text-center">
-                Tiempo
+                Duración
               </th>
               <th scope="col" className="px-6 py-3 text-xl text-azul normal-case text-center">
                 Resultados

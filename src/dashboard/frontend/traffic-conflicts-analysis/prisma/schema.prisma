@@ -27,21 +27,13 @@ model Post {
 }
 
 model Video {
-    id     String  @id @default(cuid())
-    userId String
-    name   String
-    time   Int
-    result Result?
-    user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    progress Int
-}
-
-model Result {
-    id         String @id @default(cuid())
-    videoId    String @unique
-    video      Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
-    resultLink String
+    id         String  @id @default(cuid())
+    userId     String
+    name       String
+    duration   Decimal
     progress   Int
+    resultLink String?
+    user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Necessary for Next auth
@@ -84,7 +76,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
-    video         Video[]
+    videos        Video[]
 }
 
 model VerificationToken {
