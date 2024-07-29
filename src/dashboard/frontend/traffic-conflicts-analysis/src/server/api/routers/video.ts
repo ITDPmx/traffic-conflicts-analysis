@@ -29,7 +29,7 @@ export const videoRouter = createTRPCRouter({
   getUserVideosIds: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.db.video.findMany({
       where: {
-        id: ctx.session.user.id,
+        userId: ctx.session.user.id
       },
       select: {
         id: true,
@@ -43,9 +43,6 @@ export const videoRouter = createTRPCRouter({
       return await ctx.db.video.findUnique({
         where: {
           id: input.videoId,
-        },
-        select: {
-          id: true,
         },
       });
     }),
