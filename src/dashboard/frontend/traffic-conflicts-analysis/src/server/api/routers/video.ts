@@ -50,10 +50,26 @@ export const videoRouter = createTRPCRouter({
       });
     }),
   getSignedUrl: protectedProcedure
-  .input(z.object({ name: z.string() }))
-  .mutation(async ({ input }) => {
-    const now = new Date();
-    const finalName = `${input.name.split(".")[0] + now.toISOString()}.mp4`;
+  .input(z.object({ name: z.string(), duration: z.number() }))
+  .mutation(async ({ ctx, input }) => {
+
+    const video = await ctx.db.video.create({
+      data: {
+        name: input.name,
+        progress: 0,
+        duration: input.duration,
+        user: {
+          connect: {
+            id: ctx.session.user.id,
+          },
+        },
+      },
+    });
+
+    const extension = input.name.split(".").at(-1);
+
+    const finalName = `${video.id}.${extension}`;
+    
     return await generatePresignedUrl({ name: finalName });
   }),
 

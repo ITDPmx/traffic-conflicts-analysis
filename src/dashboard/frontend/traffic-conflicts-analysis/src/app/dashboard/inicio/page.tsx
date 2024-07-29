@@ -6,9 +6,13 @@ import { api } from "~/trpc/react";
 import "react-circular-progressbar/dist/styles.css";
 import BeatLoader from "react-spinners/BeatLoader";
 
+import axios from "axios";
+
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [duration, setDuration] = useState(-1);
+  const [progress, setProgress] = useState(0);
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -19,26 +23,37 @@ export default function Home() {
       videoRef.current.onerror = () => {
         console.error("Error loading video:", selectedFile.name);
       };
+      videoRef.current.onloadedmetadata = () =>{
+        setDuration(videoRef?.current?.duration ?? -1);
+      }
     }
   }, [selectedFile]);
 
   const getSignedUrl = api.video.getSignedUrl.useMutation({
     onSuccess: async (presignedUrl) => {
       setIsUploading(true);
-      const uploadResponse = await fetch(presignedUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": selectedFile?.type ?? "",
-        },
-        body: selectedFile,
-      });
-      setIsUploading(false);
-
-      if (uploadResponse.ok) {
+      setProgress(0);
+      try {
+        await axios.put(presignedUrl, selectedFile, {
+          headers: {
+            "Content-Type": selectedFile?.type ?? "",
+          },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              setProgress(
+                Math.round((progressEvent.loaded / progressEvent.total) * 100)
+              );
+            }
+          }
+        });
         alert("El archivo se subió correctamente.");
-      } else {
+      } catch (error) {
+        console.error("Error uploading file:", error);
         alert("Hubo un error al subir el archivo.");
       }
+     
+      setIsUploading(false);
+      setProgress(0);
     },
     onError: (error) => {
       alert("Error al conseguir URL:" + error.message);
@@ -74,6 +89,7 @@ export default function Home() {
                   type="file"
                   className="hidden"
                   onChange={handleFileUpload}
+                  accept="video/*"
                 />
                 Choose file
               </label>
@@ -89,7 +105,7 @@ export default function Home() {
                   selectedFile &&
                   isExtensionSupported(selectedFile.name, supportedExtensions)
                 ) {
-                  getSignedUrl.mutate({ name: selectedFile.name });
+                  getSignedUrl.mutate({ name: selectedFile.name, duration: duration });
                 }
               }}
             >
@@ -100,7 +116,7 @@ export default function Home() {
             <div className="mx-auto flex flex-row flex-wrap items-center gap-x-4 gap-y-5">
               <BeatLoader color="#0033a0" />
               <p className="text-2xl font-bold">
-                Subiendo archivo, por favor espera.
+                Subiendo archivo, por favor espera. {progress}%
               </p>
             </div>
           )}
