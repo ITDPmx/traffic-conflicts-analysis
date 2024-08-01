@@ -50,3 +50,4 @@ subject = 'Test Email with OAuth2'
 body = 'Lorem ipsum'
 
 send_email_with_oauth2(to_email, subject, body)
+
