@@ -1,1 +1,5 @@
 __pycache__/
+venv/
+aws_lambda_artifact.zip
+dependencies/
+.~lock*
