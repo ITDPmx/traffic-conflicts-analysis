@@ -11,3 +11,7 @@
 
 - [tutorial](https://mailtrap.io/blog/python-send-email-gmail/)
 
+
+## Deploy on AWS Lambda
+
+- Check [tutorial](https://www.youtube.com/watch?v=7-CvGFJNE_o&t=2s)
