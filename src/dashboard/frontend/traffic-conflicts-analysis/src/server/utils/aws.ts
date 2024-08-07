@@ -1,0 +1,67 @@
+// Functions for AWS services
+
+import { env } from "~/env";
+
+// S3
+
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import path from "path";
+
+export const BUCKET_VIDEO_DIR = "videos";
+
+// Create an S3 client service object
+const expiration = 3600; // The expiration time of the presigned URL (in seconds)
+const s3Client = new S3Client({
+  region: env.IAWS_REGION,
+  credentials: {
+    accessKeyId: env.IAWS_ACCESS_KEY_ID,
+    secretAccessKey: env.IAWS_SECRET_ACCESS_KEY,
+  },
+});
+
+export const generatePutPresignedUrl = async ({
+  fileName,
+}: {
+  fileName: string;
+}) => {
+  const command = new PutObjectCommand({
+    Bucket: env.IAWS_BUCKET_NAME,
+    Key: path.join(BUCKET_VIDEO_DIR, fileName),
+  });
+
+  try {
+    const url = await getSignedUrl(s3Client, command, {
+      expiresIn: expiration,
+    });
+    return url;
+  } catch (err) {
+    console.error("Error generating presigned URL", err);
+  }
+  return "";
+};
+
+export const generateGetPresignedUrl = async ({
+  fileName,
+}: {
+  fileName: string;
+}) => {
+  const command = new GetObjectCommand({
+    Bucket: env.IAWS_BUCKET_NAME,
+    Key: path.join(BUCKET_VIDEO_DIR, fileName),
+  });
+
+  try {
+    const url = await getSignedUrl(s3Client, command, {
+      expiresIn: expiration,
+    });
+    return url;
+  } catch (err) {
+    console.error("Error generating presigned URL", err);
+  }
+  return null;
+};

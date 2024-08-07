@@ -67,7 +67,6 @@ export default function Home() {
 
     if (file) {
       setSelectedFile(file);
-      console.log("File uploaded:", file.name);
     }
   };
 
