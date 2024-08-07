@@ -1,8 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-
-import { CreatePost } from "~/app/_components/create-post";
-import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
 export default async function History() {
@@ -67,7 +63,7 @@ const HistoryRow = async ({ videoId }: { videoId: string }) => {
       >
         {data?.createdAt.toDateString()}
       </th>
-      <td className="px-6 py-4">{data?.name ?? "Sin Nombre"}</td>
+      <td className="px-6 py-4"><Link href={`/api/aws/video?id=${data?.id}`}>{data?.name ?? "Sin Nombre"}</Link></td>
       <td className="px-6 py-4">{Number(data?.duration) ?? "-1"}</td>
       <td className="px-6 py-4">{data?.resultLink ?? "En proceso"}</td>
     </tr>
