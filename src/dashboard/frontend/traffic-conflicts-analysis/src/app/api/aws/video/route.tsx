@@ -3,11 +3,11 @@ import { db } from "~/server/db";
 import { getServerAuthSession } from "~/server/auth";
 
 import { z } from "zod";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 const getUrl = async (req: NextRequest) => {
   const searchParams = req.nextUrl.searchParams;
-  const id = z.string().safeParse(searchParams.get("id") as string).data;
+  const id = z.string().safeParse(searchParams.get("id")).data;
 
   const session = await getServerAuthSession();
 

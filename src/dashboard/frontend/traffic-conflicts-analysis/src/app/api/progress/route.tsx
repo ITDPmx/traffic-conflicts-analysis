@@ -4,17 +4,8 @@ import { appRouter } from "~/server/api/root";
 import { createCallerFactory } from "~/server/api/trpc";
 
 import { db } from "~/server/db";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-
-type ResponseData = {
-  data?: {
-    available: boolean;
-  };
-  error?: {
-    message: string;
-  };
-};
 
 const createCaller = createCallerFactory(appRouter);
 
@@ -32,11 +23,11 @@ const caller = createCaller({
 
 const updateProgress = async (req: NextRequest) => {
   const searchParams = req.nextUrl.searchParams;
-  const id = z.string().safeParse(searchParams.get("id") as string).data;
+  const id = z.string().safeParse(searchParams.get("id")).data;
 
   const progress = z
     .number()
-    .safeParse(searchParams.get("progress") as string).data;
+    .safeParse(searchParams.get("progress")).data;
 
   if (!id) {
     return NextResponse.json(
