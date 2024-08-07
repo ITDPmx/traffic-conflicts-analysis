@@ -5,7 +5,6 @@ import { RedirectDashboard } from "~/app/_components/redirect-dashboard";
 import { getServerAuthSession } from "~/server/auth";
 
 export default async function Home() {
-
   const session = await getServerAuthSession();
   const providers = await getProviders();
 
@@ -16,9 +15,13 @@ export default async function Home() {
           <h1 className="text-center text-8xl font-semibold text-white">
             Ciudades Inteligentes
           </h1>
-          <div className="flex flex-row gap-x-24">
-            <img src="/TEC_Logo.png" alt="Logo" className="h-56 w-auto" />
-            <img src="/ITDP_Logo.png" alt="Logo" className="h-56 w-auto" />
+          <div className="flex flex-col items-center">
+            <img src="/FIAF_Logo.png" alt="Logo" className="h-40 w-auto" />
+
+            <div className="flex flex-row gap-x-24">
+              <img src="/TEC_Logo.png" alt="Logo" className="h-40 w-auto" />
+              <img src="/ITDP_Logo.png" alt="Logo" className="h-40 w-auto" />
+            </div>
           </div>
         </div>
       </div>
@@ -36,7 +39,7 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <RedirectDashboard session={session}/>
+      <RedirectDashboard session={session} />
     </main>
   );
 }

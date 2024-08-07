@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import { TfiClose } from "react-icons/tfi";
 
-import type { UserRole } from "~/server/auth";
+import { signOut } from "next-auth/react";
 
 export const Navbar = ({ role }: { role?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +20,7 @@ export const Navbar = ({ role }: { role?: string }) => {
     { name: "Inicio", path: "/dashboard/inicio" },
     { name: "Historial", path: "/dashboard/historial" },
     { name: "Usuarios", path: "/dashboard/usuarios", role: "ADMIN" },
+    { name: "Cerrar Sesión", path: "", onclick:() => signOut({ callbackUrl: "/" })},
   ];
 
   const filterMenuItems = menuItems.filter((item) => {
@@ -38,8 +39,9 @@ export const Navbar = ({ role }: { role?: string }) => {
           {filterMenuItems.map((item) => (
             <Link
               key={item.name}
-              href={item.path}
+              href={item?.path ?? ""}
               className={`px-5 text-2xl font-semibold text-white duration-200 hover:border-b-8 ${location === item.path ? "border-b-8" : ""}`}
+              onClick={item.onclick}
             >
               {item.name}
             </Link>
