@@ -11,3 +11,23 @@
 
 - [tutorial](https://mailtrap.io/blog/python-send-email-gmail/)
 
+
+## Launch API
+
+### Run locally
+- Create an env and install requirements.txt
+```bash
+# PWD: [project_root]/src/aws/functions/email
+
+python3 -m venv venv # Create env
+source venv/bin/activate # Activate env
+pip install -r requirements
+```
+- Run the app itself
+```bash
+uvicorn main:app --reload  
+```
+
+
+### Deploy
+- Check [tutorial](https://www.youtube.com/watch?v=7-CvGFJNE_o&t=2s)

@@ -18,7 +18,7 @@ def set_header(workbook: Workbook, header_data: HeaderData, header_metadata: Met
     for key, value in header_metadata.info.items():
         
         # Some values are optional, non-optional values are validated in pydantic schema
-        if key not in header_data_dict:
+        if key not in header_data_dict or key == "id":
             continue
         
         target_row = value.row
@@ -95,9 +95,9 @@ def get_starting_row(workbook: Workbook):
                 if i >= merged_range.min_row and i <= merged_range.max_row:
                     return merged_range.max_row
 
-def test():
-    
-    with open('data/mock.json') as json_data:
+
+def main():
+    with open('test/data/mock.json') as json_data:
         test_data = json.load(json_data)
     
     header_data = test_data["header_data"]
@@ -116,9 +116,6 @@ def test():
     
     wb.save(filename="data/output_test.xlsx")
     
-
-def main():
-    test()
 
 if __name__ == "__main__":
     main()

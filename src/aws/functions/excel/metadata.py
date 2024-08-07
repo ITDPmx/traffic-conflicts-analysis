@@ -29,6 +29,7 @@ cell_locations = {
     "date": Cell(row=2, col=24),
     "time_start": Cell(row=3, col=24),
     "time_end": Cell(row=4, col=24),
+    "id": Cell(row=-1, col=-1), # ignore id
 }
 
 header_metadata = Metadata(info=cell_locations)
