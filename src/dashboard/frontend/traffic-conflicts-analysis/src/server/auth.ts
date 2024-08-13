@@ -47,6 +47,20 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  events: {
+    signIn: async (event) => {
+      if (event.user.email) {
+        await db.user.update({
+          where: {
+            id: event.user.id,
+          },
+          data: {
+            lastLogin: new Date(),
+          },
+        });
+      }
+    },
+  },
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
