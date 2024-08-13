@@ -13,7 +13,7 @@ export default async function Home() {
       <div className="w-full bg-[url('/Interseccion.png')] bg-cover">
         <div className="flex h-full flex-col items-center justify-around">
           <h1 className="text-center text-8xl font-semibold text-white">
-            Ciudades Inteligentes
+            Analítica de Conflictos Viales
           </h1>
           <div className="flex flex-col items-center">
             <img src="/FIAF_Logo.png" alt="Logo" className="h-40 w-auto" />
