@@ -11,7 +11,7 @@ export const UserRow = ({ userId, callerUserId }: { userId: string, callerUserId
     const modifyUser = api.user.modifyUserRole.useMutation(
       {
         onSuccess: () => {
-          utils.user.getUserDataById.invalidate({userId: userId});
+          utils.user.getUserDataById.invalidate({userId: userId}).catch(console.error);
           alert("Usuario modificado");
         },
         onError: (error) => {

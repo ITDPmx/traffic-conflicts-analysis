@@ -29,7 +29,6 @@ export const videoRouter = createTRPCRouter({
     });
   }),
   getUserVideosById: protectedProcedure
-
     .input(z.object({ videoId: z.string() }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.video.findUnique({
