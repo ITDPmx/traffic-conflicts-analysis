@@ -11,10 +11,17 @@ import {
 import { generatePutPresignedUrl } from "~/server/utils/aws";
 
 export const videoRouter = createTRPCRouter({
-  getUserVideosIds: protectedProcedure.query(async ({ ctx }) => {
+  getUserVideosIds: protectedProcedure
+  .input(z.object({ userId: z.string() }))
+  .query(async ({ ctx, input }) => {
+
+    if (input.userId !== ctx.session.user.id && ctx.session.user.role !== "ADMIN") {
+      return [];
+    }
+
     return await ctx.db.video.findMany({
       where: {
-        userId: ctx.session.user.id,
+        userId: input.userId,
       },
       select: {
         id: true,

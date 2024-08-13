@@ -1,8 +1,17 @@
 import Link from "next/link";
+import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
-export default async function History() {
-  const videoIds = await api.video.getUserVideosIds();
+export default async function History({searchParams} : {
+    searchParams?: { [key: string]: string | string[] | undefined };
+}) {
+
+  const session = await getServerAuthSession();
+  const id = searchParams?.id as string;
+
+  const videoIds = await api.video.getUserVideosIds({
+    userId: id ?? session?.user.id,
+  });
 
   return (
     <div className="mx-auto flex w-full items-center">
@@ -45,6 +54,11 @@ export default async function History() {
         {videoIds.length === 0 && (
           <div className="p-4 text-center text-gray-500 dark:text-gray-400">
             No hay videos
+          </div>
+        )}
+        {videoIds.length === 0 && session?.user.role !== "ADMIN" && id !== session?.user.id && (
+          <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+            Necesitas ser admin para ver los videos de alguien más.
           </div>
         )}
       </div>
