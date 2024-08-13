@@ -20,7 +20,7 @@ export const Navbar = ({ role }: { role?: string }) => {
     { name: "Inicio", path: "/dashboard/inicio" },
     { name: "Historial", path: "/dashboard/historial" },
     { name: "Usuarios", path: "/dashboard/usuarios", role: "ADMIN" },
-    { name: "Cerrar Sesión", path: "", onclick:() => signOut({ callbackUrl: "/" })},
+    { name: "Cerrar Sesión", path: "", onclick:() => signOut()},
   ];
 
   const filterMenuItems = menuItems.filter((item) => {

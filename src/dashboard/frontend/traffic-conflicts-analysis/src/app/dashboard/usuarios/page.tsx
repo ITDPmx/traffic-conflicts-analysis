@@ -1,8 +1,12 @@
-import Link from "next/link";
 import { api } from "~/trpc/server";
 
-export default async function History() {
-  const videoIds = await api.video.getUserVideosIds();
+import { getServerSession } from "next-auth";
+import { UserRow } from "~/app/_components/UserRow";
+
+export default async function Users() {
+  const userIds= await api.user.getUserIds();
+
+  const session = await getServerSession();
 
   return (
     <div className="mx-auto flex w-full items-center">
@@ -14,37 +18,43 @@ export default async function History() {
                 scope="col"
                 className="px-6 py-3 text-center text-xl normal-case text-azul"
               >
-                Fecha
+                Fecha de registro
               </th>
               <th
                 scope="col"
                 className="px-6 py-3 text-center text-xl normal-case text-azul"
               >
-                Video
+                Admin
               </th>
               <th
                 scope="col"
                 className="px-6 py-3 text-center text-xl normal-case text-azul"
               >
-                Duración
+                Nombre
               </th>
               <th
                 scope="col"
                 className="px-6 py-3 text-center text-xl normal-case text-azul"
               >
-                Resultados
+                Videos procesados
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-center text-xl normal-case text-azul"
+              >
+                Último ingreso
               </th>
             </tr>
           </thead>
           <tbody>
-            {videoIds.map((videoId) => (
-              <HistoryRow key={videoId.id} videoId={videoId.id} />
+            {userIds?.map((userId) => (
+              <UserRow key={userId.id} userId={userId.id} callerUserId={session?.user.id ?? ""} />
             ))}
           </tbody>
         </table>
-        {videoIds.length === 0 && (
+        {userIds?.length === 0 && (
           <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-            No hay videos
+            No hay usuarios
           </div>
         )}
       </div>
@@ -52,20 +62,3 @@ export default async function History() {
   );
 }
 
-const HistoryRow = async ({ videoId }: { videoId: string }) => {
-  const data = await api.video.getUserVideosById({ videoId });
-
-  return (
-    <tr className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800">
-      <th
-        scope="row"
-        className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
-      >
-        {data?.createdAt.toDateString()}
-      </th>
-      <td className="px-6 py-4 underline"><Link href={`/api/aws/video?id=${data?.id}`}>{data?.name ?? "Sin Nombre"}</Link></td>
-      <td className="px-6 py-4">{Number(data?.duration) ?? "-1"}</td>
-      <td className="px-6 py-4">{data?.resultLink ?? "En proceso"}</td>
-    </tr>
-  );
-};
