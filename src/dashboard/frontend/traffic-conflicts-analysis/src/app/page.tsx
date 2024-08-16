@@ -1,6 +1,6 @@
 import { getProviders } from "next-auth/react";
 
-import { SignInButtons } from "~/app/_components/signin-buttons";
+import { GetProviderLink, SignInButtons, GoogleButton } from "~/app/_components/signin-buttons";
 import { RedirectDashboard } from "~/app/_components/redirect-dashboard";
 import { getServerAuthSession } from "~/server/auth";
 
@@ -9,37 +9,55 @@ export default async function Home() {
   const providers = await getProviders();
 
   return (
-    <main className="flex h-screen w-screen flex-row">
-      <div className="w-full bg-[url('/Interseccion.png')] bg-cover">
-        <div className="flex h-full flex-col items-center justify-around">
-          <h1 className="text-center text-8xl font-semibold text-white">
-            Analítica de Conflictos Viales
-          </h1>
-          <div className="flex flex-col items-center">
-            <img src="/FIAF_Logo.png" alt="Logo" className="h-40 w-auto" />
-
-            <div className="flex flex-row gap-x-24">
-              <img src="/TEC_Logo.png" alt="Logo" className="h-40 w-auto" />
-              <img src="/ITDP_Logo.png" alt="Logo" className="h-40 w-auto" />
+    <>
+      <div className="hidden md:block">
+        <main className="flex h-screen w-screen flex-row">
+          <div className="flex w-1/2 flex-row px-10">
+            <div className="mt-44 flex flex-col gap-y-2">
+              <h1 className="border-b-4 border-solid border-verde pb-6 text-6xl font-bold text-gray-600">
+                Identificador de conflictos viales
+              </h1>
+              <p className="text-lg text-gray-600 font-medium pt-4">
+                Herramienta gratuita para identificar conflictos viales mediante
+                el análisis de videos capturados por cámaras instaladas en
+                intersecciones viales.
+              </p>
+              <div className="mb-10 mt-auto">
+                <p className="mt-12 text-lg font-medium text-gray-600">
+                  Una colaboración de:
+                </p>
+                <div className="mt-4 flex space-x-4">
+                  <img
+                    src="/ITDP_logo_completo.png"
+                    alt="ITDP Logo"
+                    className="w-[27%] object-contain"
+                  />
+                  <img src="/TEC_logo_completo.png" alt="Tec Logo" className="w-[30%] h-auto object-contain" />
+                  <img
+                    src="/FIA_logo_completo.png"
+                    alt="FIA Foundation Logo"
+                    className="w-[35%] h-auto object-contain"
+                  />
+                </div>
+                <p className="mt-12 text-sm text-gray-600">
+                  Si tienes alguna duda o comentario, no dudes en contactarnos a
+                  través de este mail.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="w-full">
-        <div className="flex h-full flex-col items-center justify-around">
-          <h1 className="mx-28 text-center text-8xl font-semibold text-black">
-            Inicio de sesión
-          </h1>
-          <div className="flex flex-col gap-y-6">
-            <SignInButtons providers={providers} />
-            <p className="text-center text-xl text-gray-400">
-              Analiza tus videos en minutos
-            </p>
+          <div
+            className="w-1/2 bg-cover bg-center bg-black"
+            style={{ backgroundImage: `url('path_to_image')` }}
+          >
+            <div className="flex h-full justify-center">
+              <GoogleButton className="mt-[80%]" providers={providers}/>
+            </div>
           </div>
-        </div>
+        </main>
+        <RedirectDashboard session={session} />
       </div>
-      <RedirectDashboard session={session} />
-    </main>
+    </>
   );
 }
