@@ -4,7 +4,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { Navbar } from "~/app/_components/navbar";
 
 export const metadata = {
-  title: "Análisis de Conflictos Viales",
+  title: "Identificador de Conflictos Viales",
   description: "TCA - ITDP - TEC",
   icons: [{ rel: "icon", url: "/favicon-32x32.png" }],
 };

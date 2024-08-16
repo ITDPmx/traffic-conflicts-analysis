@@ -14,7 +14,7 @@ export default async function Home() {
         <main className="flex h-screen w-screen flex-row">
           <div className="flex w-1/2 flex-row px-10">
             <div className="mt-44 flex flex-col gap-y-2">
-              <h1 className="border-b-4 border-solid border-verde pb-6 text-6xl font-bold text-gray-600">
+              <h1 className="border-b-4 border-solid border-verde pb-6 text-7xl font-bold text-gray-600">
                 Identificador de conflictos viales
               </h1>
               <p className="text-lg text-gray-600 font-medium pt-4">
@@ -39,7 +39,7 @@ export default async function Home() {
                     className="w-[35%] h-auto object-contain"
                   />
                 </div>
-                <p className="mt-12 text-sm text-gray-600">
+                <p className="mt-12 text-sm text-gray-600 text-center">
                   Si tienes alguna duda o comentario, no dudes en contactarnos a
                   través de este mail.
                 </p>
