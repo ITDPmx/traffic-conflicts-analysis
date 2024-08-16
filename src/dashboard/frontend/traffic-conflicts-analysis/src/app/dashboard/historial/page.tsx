@@ -21,25 +21,25 @@ export default async function History({searchParams} : {
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-center text-xl normal-case text-azul"
+                className="px-6 py-3 text-center text-xl normal-case text-verde"
               >
                 Fecha
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-center text-xl normal-case text-azul"
+                className="px-6 py-3 text-center text-xl normal-case text-verde"
               >
                 Video
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-center text-xl normal-case text-azul"
+                className="px-6 py-3 text-center text-xl normal-case text-verde"
               >
                 Duración
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-center text-xl normal-case text-azul"
+                className="px-6 py-3 text-center text-xl normal-case text-verde"
               >
                 Resultados
               </th>

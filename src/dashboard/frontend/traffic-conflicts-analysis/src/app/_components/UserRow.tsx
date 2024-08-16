@@ -30,13 +30,13 @@ export const UserRow = ({ userId, callerUserId }: { userId: string, callerUserId
         </th>
         <td className="px-6 py-4">
           <label className="inline-flex cursor-pointer items-center">
-            <input type="checkbox" checked={userData?.role === "ADMIN"}
+            <input type="checkbox" checked={userData?.role === "ADMIN"} 
               onChange={() => {
                 modifyUser.mutate({ userId: userData?.id ?? "", isAdmin: userData?.role !== "ADMIN" });
               }
             }
-            className="peer sr-only" disabled={userId === callerUserId} />
-            <div className={twMerge("peer relative h-6 w-11 rounded-full bg-gray-400 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800",
+            className="peer sr-only text-verde bg-verde" disabled={userId === callerUserId} />
+            <div className={twMerge("peer relative h-6 w-11 rounded-full bg-gray-400 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-verde peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800",
                userId === callerUserId ? "bg-gray-100" : "")}></div>
           </label>
         </td>

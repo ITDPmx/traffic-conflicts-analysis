@@ -16,31 +16,31 @@ export default async function Users() {
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-center text-xl normal-case text-azul"
+                className="px-6 py-3 text-center text-xl normal-case text-verde"
               >
                 Fecha de registro
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-center text-xl normal-case text-azul"
+                className="px-6 py-3 text-center text-xl normal-case text-verde"
               >
                 Admin
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-center text-xl normal-case text-azul"
+                className="px-6 py-3 text-center text-xl normal-case text-verde"
               >
                 Nombre
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-center text-xl normal-case text-azul"
+                className="px-6 py-3 text-center text-xl normal-case text-verde"
               >
                 Videos procesados
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-center text-xl normal-case text-azul"
+                className="px-6 py-3 text-center text-xl normal-case text-verde"
               >
                 Último ingreso
               </th>
