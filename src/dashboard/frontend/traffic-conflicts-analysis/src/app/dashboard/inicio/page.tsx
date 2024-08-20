@@ -7,6 +7,7 @@ import "react-circular-progressbar/dist/styles.css";
 import BeatLoader from "react-spinners/BeatLoader";
 
 import axios from "axios";
+import Link from "next/link";
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -71,10 +72,29 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="mt-[75pt] flex flex-col md:flex-row">
-        <div className="box-border w-full  md:w-[70%]">
+    <div className="flex h-[90vh] flex-col justify-between">
+      <div className="h-[2vh]"><p className="text-white">a</p></div>
+      <div className="flex flex-col md:flex-row">
+        <div className="box-border w-full md:w-[70%]">
           <div className="flex flex-col gap-y-8">
+            <div className="flex flex-row  justify-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full border-4  border-verde p-7 text-3xl font-bold text-gris">
+                1
+              </div>
+              <div className="mx-5 mb-5 flex flex-col items-start gap-y-6 text-lg max-w-[50%]">
+                <p>
+                  Sube un video de una intersección vial para analizar e
+                  identificar los conflictos viales entre peatones, ciclistas y
+                  vehículos.
+                </p>
+                <p>
+                  Consulta el{" "}
+                  <span className="underline">manual de usuario</span> o
+                  descarga un <span className="underline">video de prueba</span>
+                  .
+                </p>
+              </div>
+            </div>
             {selectedFile &&
               !isExtensionSupported(selectedFile.name, supportedExtensions) && (
                 <p className="text-center text-red-500">
@@ -82,9 +102,10 @@ export default function Home() {
                   soportadas: {supportedExtensions.join(", ")}
                 </p>
               )}
+
             <div className="flex flex-row flex-wrap justify-around gap-y-4">
-              <div className="ml-4 flex flex-row rounded-md border-2 border-gray-400">
-                <label className="custom-file-upload bg-verde p-3 text-center text-2xl font-bold text-white">
+              <div className="ml-4 flex flex-row rounded-md border-2 border-black">
+                <label className="custom-file-upload border-r-2 border-black bg-verde p-3 text-center text-2xl font-bold text-white">
                   <input
                     type="file"
                     className="hidden"
@@ -99,7 +120,7 @@ export default function Home() {
               </div>
 
               <button
-                className="rounded-[1.7em] bg-verde px-12 py-3 text-2xl font-bold text-white"
+                className="rounded-lg bg-verde px-12 py-3 text-2xl font-bold text-white"
                 onClick={async () => {
                   if (
                     selectedFile &&
@@ -128,7 +149,7 @@ export default function Home() {
               isExtensionSupported(selectedFile.name, supportedExtensions) ? (
                 <video ref={videoRef} width="800" controls className="m-auto" />
               ) : (
-                <div className="border-2 border-black rounded-lg w-[60%] h-[450px] mx-auto flex">
+                <div className="shadow-full-border mx-auto flex h-[350px] w-[60%] rounded-lg">
                   <img
                     alt="Image Placeholder"
                     className="m-auto w-[200px]"
@@ -140,27 +161,47 @@ export default function Home() {
           </div>
         </div>
         <div className="box-border w-full md:w-[30%]">
-          <div className="justify-b mr-[10%] flex h-full flex-col items-center justify-around rounded-3xl border-2 border-black">
-            <h2 className="text-3xl font-bold text-gray-600">Resultados</h2>
+          <div className="flex flex-row">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full border-4  border-verde p-7 text-3xl font-bold text-gris">
+              2
+            </div>
+            <div className="mx-5 mb-5 flex flex-col items-start gap-y-6 text-lg">
+              <p>
+                Descarga los resultados y analízalos en una herramienta como
+                Excel o Google Sheets.
+              </p>
+              <p>
+                También puedes revisar tu historial de videos analizados en
+                {"  "}
+                <Link className="underline" href={"/dashboard/historial"}>
+                  Historial
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
+          <div className="justify-b shadow-full-border mr-[10%] flex flex-col items-center justify-around gap-y-12 rounded-3xl py-12">
+            <h2 className="text-3xl font-bold text-verde">Resultados</h2>
             <CircularProgressbar
-              className="h-40 text-verde"
+              className="h-32 text-verde"
               styles={buildStyles({
-                textColor: "#41a85d",
-                backgroundColor: "#41a85d",
-                pathColor: "#41a85d",
+                textColor: "#00A94F",
+                backgroundColor: "#00A94F",
+                pathColor: "#00A94F",
               })}
               value={0}
               text={`0%`}
             />
-            <button className="rounded-[1.7em] bg-verde px-12 py-3 text-2xl font-bold text-white">
+            <button className="rounded-lg bg-verde px-12 py-3 text-2xl font-bold text-white">
               Descargar
             </button>
           </div>
         </div>
       </div>
 
-      <div className="ml-auto mr-[5%] mt-10">
-        <div className="mt-4 flex flex-row flex-wrap items-center space-x-4">
+      <div className="ml-[5%] flex flex-row items-center">
+        <p className="text-center text-gris">Una colaboración de:</p>
+        <div className="ml-7 mt-4 flex flex-row flex-wrap items-center space-x-4">
           <img
             src="/ITDP_logo_completo.png"
             alt="ITDP Logo"

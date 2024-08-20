@@ -7,11 +7,16 @@ export default {
     extend: {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        'fira-sans' : ["Fira Sans", "sans-serif"]
       },
       colors: {
         azul: "#0033a0",
-        verde: "#41a85d",
+        verde: "#00A94F",
         base: "#FFFFFF",
+        gris: "#4D4D4D",
+      },
+      boxShadow: {
+        'full-border': '0 0 10px rgba(0, 0, 0, 0.5)',
       }
     },
   },

@@ -20,7 +20,7 @@ export const Navbar = ({ role }: { role?: string }) => {
     { name: "Inicio", path: "/dashboard/inicio" },
     { name: "Historial", path: "/dashboard/historial" },
     { name: "Usuarios", path: "/dashboard/usuarios", role: "ADMIN" },
-    { name: "Cerrar Sesión", path: "", onclick:() => signOut()},
+    { name: "Cerrar Sesión", path: "", onclick: () => signOut() },
   ];
 
   const filterMenuItems = menuItems.filter((item) => {
@@ -33,14 +33,16 @@ export const Navbar = ({ role }: { role?: string }) => {
 
   return (
     <nav className="fixed left-0 top-0 z-10 w-full border-b-4 border-b-verde bg-white">
-      <div className="container mx-auto flex items-center justify-between h-24">
-        <div className="text-2xl lg:text-4xl font-bold  text-gray-600">Identificador de conflictos viales</div>
-        <div className="hidden space-x-8 lg:space-x-16 pr-8 md:flex">
+      <div className="container mx-auto flex h-[10vh] items-center justify-between">
+        <div className="md:text-xl font-bold text-verde  lg:text-2xl">
+          Identificador de conflictos viales
+        </div>
+        <div className="hidden space-x-8 pr-8 md:flex lg:space-x-16">
           {filterMenuItems.map((item) => (
             <Link
               key={item.name}
               href={item?.path ?? ""}
-              className={`px-5 text-sm lg:text-2xl text-gray-500 border-verde duration-200 hover:border-b-8 ${location === item.path ? "border-b-8" : ""}`}
+              className={`rounded-b-sm border-verde px-5 text-sm text-gray-500 duration-200 hover:border-b-4 lg:text-xl ${location === item.path ? "border-b-4" : ""}`}
               onClick={item.onclick}
             >
               {item.name}
@@ -59,7 +61,7 @@ export const Navbar = ({ role }: { role?: string }) => {
             <Link
               key={item.name}
               href={item.path}
-              className={`my-2 block p-2 text-2xl text-white duration-200 border-verde hover:border-l-4 ${location === item.path ? "border-l-4" : ""}`}
+              className={`my-2 block border-verde p-2 text-2xl text-white duration-200 hover:border-l-4 ${location === item.path ? "border-l-4" : ""}`}
               onClick={() => setIsOpen(false)}
             >
               {item.name}

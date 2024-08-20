@@ -74,11 +74,11 @@ export const GoogleButton = ({
 
   return (
     <button
-      className={twMerge("flex h-14 items-center space-x-2 rounded-full bg-white px-6 py-3 font-semibold text-gray-800 shadow-md", className)}
+      className={twMerge("flex h-14 items-center space-x-2 rounded-sm bg-white px-14 py-3 font-semibold text-gray-800 shadow-md", className)}
       onClick={() => signIn(googleLink ?? "")}
     >
       <img src="/google_logo.png" alt="Google Logo" className="h-5" />
-      <span>Sign in with Google</span>
+      <span className="text-xl">Sign in with Google</span>
     </button>
   );
 };
