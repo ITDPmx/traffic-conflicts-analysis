@@ -7,7 +7,9 @@ import importlib
 import json
 import shutil
 import hashlib
-
+import cv2
+from shapely.geometry import Polygon
+import numpy as np
 from os import scandir
 from random import randrange
 from datetime import datetime as Datetime, timedelta as Timedelta, date as Date
@@ -1105,3 +1107,147 @@ class GenericGlobalProcedures( Borg ):
             [int]: Bytes length
         """        
         return len( str( value ).encode( 'utf-' + utf ) )
+
+    #-----------------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def apply_nms(boxes, scores, iou_threshold):
+        """
+        Apply non-maximum suppression (NMS) to the bounding boxes.
+        Args:
+            boxes ([list]): List of bounding boxes
+            scores ([list]): List of confidence scores
+            iou_threshold ([float]): Intersection over union threshold
+        Returns:
+            [list]: List of bounding boxes and indices after NMS
+        """ 
+        indices = cv2.dnn.NMSBoxes(boxes, scores, score_threshold=0.3, nms_threshold=iou_threshold)
+        return [boxes[i] for i in indices], [i for i in indices]
+    
+    #-----------------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def xywhr_to_xyxy(xywhr):
+        """
+        Convert bounding box from (x, y, w, h, r) to (x_min, y_min, x_max, y_max) 
+        Args:
+            xywhr ([tuple]): Bounding box in format (x, y, w, h, r)
+        Returns:
+            [tuple]: Bounding box in format (x_min, y_min, x_max, y_max)
+        """
+        x, y, w, h, r = xywhr
+
+        # Calculate the corners of the bounding box before rotation
+        corners = np.array([
+            [x - w / 2, y - h / 2],
+            [x + w / 2, y - h / 2],
+            [x + w / 2, y + h / 2],
+            [x - w / 2, y + h / 2]
+        ])
+
+        # Rotation matrix
+        rotation_matrix = np.array([
+            [np.cos(r), -np.sin(r)],
+            [np.sin(r), np.cos(r)]
+        ])
+
+        # Rotate the corners
+        rotated_corners = np.dot(corners - np.array([x, y]), rotation_matrix) + np.array([x, y])
+
+        # Find the bounding box
+        x_min = np.min(rotated_corners[:, 0])
+        y_min = np.min(rotated_corners[:, 1])
+        x_max = np.max(rotated_corners[:, 0])
+        y_max = np.max(rotated_corners[:, 1])
+
+        return x_min, y_min, x_max, y_max
+    
+
+    #-----------------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def convert_xyxy_to_xyxyxyxy(coords):
+        """
+        Convert bounding box from (x_min, y_min, x_max, y_max) to (x_min, y_min, x_max, y_min, x_max, y_max, x_min, y_max)
+        Args:
+            coords ([tuple]): Bounding box in format (x_min, y_min, x_max, y_max)
+        Returns:
+            [tuple]: Bounding box in format (x_min, y_min, x_max, y_min, x_max, y_max, x_min, y_max)
+        """
+        return [(coords[0], coords[1]), (coords[2], coords[1]), (coords[2], coords[3]), (coords[0], coords[3])]
+
+    #-----------------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def calculate_iou(boxA, boxB):
+        """
+        Calculate the Intersection over Union (IoU) of two bounding boxes.
+        Args:
+            boxA ([list]): The first bounding box
+            boxB ([list]): The second bounding box
+        Returns:
+            [float]: The IoU value
+        """
+        polyA = Polygon(boxA)
+        polyB = Polygon(boxB)
+        inter_area = polyA.intersection(polyB).area
+        union_area = polyA.area + polyB.area - inter_area
+        iou = inter_area / union_area
+        return iou
+
+    #-----------------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def get_centroid(points):
+        """
+        Calculate the centroid of a set of points.
+        Args:
+            points ([list]): List of points
+        Returns:
+            [tuple]: The centroid of the points
+        """
+        points = np.array(points)
+        centroid_x = np.mean(points[:, 0])
+        centroid_y = np.mean(points[:, 1])
+        return (centroid_x, centroid_y)
+    
+    #-----------------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def get_dir_vect(mask, flow):
+        """
+        Calculate the direction vector of the flow within a mask.
+        Args:
+            mask ([list]): List of points in the mask
+            flow ([numpy.ndarray]): Optical flow
+        Returns:
+            [numpy.ndarray]: The direction vector of the flow within the mask
+        """
+        mask_points = np.array(mask, np.int32)
+        mask_img = np.zeros(flow.shape[:2], dtype=np.uint8)
+        cv2.fillPoly(mask_img, [mask_points], 1)
+        flow_x = flow[..., 0]
+        flow_y = flow[..., 1]
+        mean_flow_x = np.mean(flow_x[mask_img == 1])
+        mean_flow_y = np.mean(flow_y[mask_img == 1])
+        return np.array([mean_flow_x, mean_flow_y])
+
+    #-----------------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def xywhr_to_xyxyxyxy(xywhr):
+        """
+        Convert bounding box from (x, y, w, h, r) to (x_min, y_min, x_max, y_min, x_max, y_max, x_min, y_max)
+        Args:
+            xywhr ([tuple]): Bounding box in format (x, y, w, h, r)
+        Returns:
+            [tuple]: Bounding box in format (x_min, y_min, x_max, y_min, x_max, y_max, x_min, y_max)
+        """
+        x, y, h, w, r = xywhr
+        corners = np.array([
+            [-w / 2, -h / 2],
+            [w / 2, -h / 2],
+            [w / 2, h / 2],
+            [-w / 2, h / 2]
+        ])
+        rotation_matrix = np.array([
+            [np.cos(r), -np.sin(r)],
+            [np.sin(r), np.cos(r)]
+        ])
+        rotated_corners = np.dot(corners, rotation_matrix.T)
+        translated_corners = rotated_corners + np.array([x, y])
+        xyxyxyxy = [tuple(map(int, map(round, coord))) for coord in translated_corners]
+        return xyxyxyxy

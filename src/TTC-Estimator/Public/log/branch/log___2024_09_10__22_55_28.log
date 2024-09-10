@@ -1,0 +1,29 @@
+---------------------------------
+[2024-09-10 22:55:28][INFO][200]:La conexion [dbconn_standard] esta desabilitada en el archivo .config
+---------------------------------
+[2024-09-10 22:55:28][INFO][200]:Iniciando ...
+---------------------------------
+[2024-09-10 22:57:57][INFO][200]:Video videos/181653_cam3_bev.mp4 processed in 149.44599556922913 seconds
+---------------------------------
+[2024-09-10 22:57:58][EXCEPTION][500]:PYTHON-EXCEPTION:
+
+>>>>>>>>>>>>>>>[TRACEBACK]<<<<<<<<<<<<<<<
+
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/main.py", line 10, in <module>
+    ProjectDirector.go( sys.argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 129, in go
+    ProjectDirector().setFlux( argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 109, in setFlux
+    self.__play(
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 61, in __play
+    trajs_processor.correct_by_velocity()
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/App/TrajsProcessor/TrajsProcessor.py", line 111, in correct_by_velocity
+    self.plot_scale_factor_map()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+>>>>>>>>>>>>>>[ERROR_DESC]<<<<<<<<<<<<<<<
+
+  [AttributeError]:'TrajsProcessor' object has no attribute 'plot_scale_factor_map'
+
+>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<
+

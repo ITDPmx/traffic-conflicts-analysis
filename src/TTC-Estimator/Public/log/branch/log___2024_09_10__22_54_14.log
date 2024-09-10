@@ -1,0 +1,32 @@
+---------------------------------
+[2024-09-10 22:54:14][INFO][200]:La conexion [dbconn_standard] esta desabilitada en el archivo .config
+---------------------------------
+[2024-09-10 22:54:14][INFO][200]:Iniciando ...
+---------------------------------
+[2024-09-10 22:54:27][EXCEPTION][500]:PYTHON-EXCEPTION:
+
+>>>>>>>>>>>>>>>[TRACEBACK]<<<<<<<<<<<<<<<
+
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/main.py", line 10, in <module>
+    ProjectDirector.go( sys.argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 129, in go
+    ProjectDirector().setFlux( argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 109, in setFlux
+    self.__play(
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 54, in __play
+    df = obb_processor.process_video()
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/App/OBBDetector/OBBDetector.py", line 60, in process_video
+    self.process_frame(frame, frame_sig, act, sig, results_2d, results_obb, timestamp, frame_ix)
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/App/OBBDetector/OBBDetector.py", line 81, in process_frame
+    self.extract_trajs_atts( filtered_boxes, filtered_track_ids, filtered_masks, filtered_boxes_2d, boxes_obb, flow_mag_color, flow, self.fps, timestamp, frame_ix)
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/App/OBBDetector/OBBDetector.py", line 119, in extract_trajs_atts
+    direction_vector = self.direction_vector_calculator.calculate(filtered_masks[i], flow)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+>>>>>>>>>>>>>>[ERROR_DESC]<<<<<<<<<<<<<<<
+
+  [AttributeError]:'OBBDetector' object has no attribute 'direction_vector_calculator'
+
+>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<
+
