@@ -1,0 +1,29 @@
+---------------------------------
+[2024-09-11 16:13:13][INFO][200]:La conexion [dbconn_standard] esta desabilitada en el archivo .config
+---------------------------------
+[2024-09-11 16:13:13][INFO][200]:Iniciando ...
+---------------------------------
+[2024-09-11 16:15:42][INFO][200]:Video videos/181653_cam3_bev.mp4 processed in 149.47214555740356 seconds
+---------------------------------
+[2024-09-11 16:15:43][EXCEPTION][500]:PYTHON-EXCEPTION:
+
+>>>>>>>>>>>>>>>[TRACEBACK]<<<<<<<<<<<<<<<
+
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/main.py", line 10, in <module>
+    ProjectDirector.go( sys.argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 141, in go
+    ProjectDirector().setFlux( argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 121, in setFlux
+    self.__play(
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 64, in __play
+    trajs_processor.interpolate_data()
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/App/TrajsProcessor/TrajsProcessor.py", line 163, in interpolate_data
+    df['sampling_period'] = pd.to_timedelta(df['sampling_period'], unit='s')
+                                            ^^
+
+>>>>>>>>>>>>>>[ERROR_DESC]<<<<<<<<<<<<<<<
+
+  [NameError]:name 'df' is not defined
+
+>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<
+

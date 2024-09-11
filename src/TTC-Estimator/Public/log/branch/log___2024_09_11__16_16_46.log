@@ -1,0 +1,40 @@
+---------------------------------
+[2024-09-11 16:16:46][INFO][200]:La conexion [dbconn_standard] esta desabilitada en el archivo .config
+---------------------------------
+[2024-09-11 16:16:46][INFO][200]:Iniciando ...
+---------------------------------
+[2024-09-11 16:19:16][INFO][200]:Video videos/181653_cam3_bev.mp4 processed in 149.8883821964264 seconds
+---------------------------------
+[2024-09-11 16:19:17][INFO][200]:Trajectories processed in 1.1950082778930664 seconds
+---------------------------------
+[2024-09-11 16:19:19][EXCEPTION][500]:PYTHON-EXCEPTION:
+
+>>>>>>>>>>>>>>>[TRACEBACK]<<<<<<<<<<<<<<<
+
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/main.py", line 10, in <module>
+    ProjectDirector.go( sys.argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 141, in go
+    ProjectDirector().setFlux( argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 121, in setFlux
+    self.__play(
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 77, in __play
+    colProc.preprocess_data()
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/App/CollisionDataProcessor/CollisionDataProcessor.py", line 41, in preprocess_data
+    self.df_filtered = self.df.groupby('id').apply(self.calculate_velocity).reset_index(drop=True)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alanromero/anaconda3/envs/itdp/lib/python3.11/site-packages/pandas/core/groupby/groupby.py", line 1846, in apply
+    return self._python_apply_general(f, self._obj_with_exclusions)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alanromero/anaconda3/envs/itdp/lib/python3.11/site-packages/pandas/core/groupby/groupby.py", line 1885, in _python_apply_general
+    values, mutated = self._grouper.apply_groupwise(f, data, self.axis)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alanromero/anaconda3/envs/itdp/lib/python3.11/site-packages/pandas/core/groupby/ops.py", line 919, in apply_groupwise
+    res = f(group)
+          ^^^^^^^^
+
+>>>>>>>>>>>>>>[ERROR_DESC]<<<<<<<<<<<<<<<
+
+  [TypeError]:CollisionDataProcessor.calculate_velocity() takes 1 positional argument but 2 were given
+
+>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<
+

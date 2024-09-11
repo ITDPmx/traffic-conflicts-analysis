@@ -1,0 +1,51 @@
+---------------------------------
+[2024-09-11 16:35:35][INFO][200]:La conexion [dbconn_standard] esta desabilitada en el archivo .config
+---------------------------------
+[2024-09-11 16:35:35][INFO][200]:Iniciando ...
+---------------------------------
+[2024-09-11 16:38:05][INFO][200]:Video videos/181653_cam3_bev.mp4 processed in 149.94978284835815 seconds
+---------------------------------
+[2024-09-11 16:38:07][INFO][200]:Trajectories processed in 1.1823952198028564 seconds
+---------------------------------
+[2024-09-11 16:38:09][EXCEPTION][500]:PYTHON-EXCEPTION:
+
+>>>>>>>>>>>>>>>[TRACEBACK]<<<<<<<<<<<<<<<
+
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/main.py", line 10, in <module>
+    ProjectDirector.go( sys.argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 141, in go
+    ProjectDirector().setFlux( argv )
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 121, in setFlux
+    self.__play(
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/Director/ProjectDirector.py", line 77, in __play
+    colProc.preprocess_data()
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/App/CollisionDataProcessor/CollisionDataProcessor.py", line 41, in preprocess_data
+    self.df = self.df.groupby('id').apply(self.calculate_velocity).reset_index(drop=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alanromero/anaconda3/envs/itdp/lib/python3.11/site-packages/pandas/core/groupby/groupby.py", line 1824, in apply
+    result = self._python_apply_general(f, self._selected_obj)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alanromero/anaconda3/envs/itdp/lib/python3.11/site-packages/pandas/core/groupby/groupby.py", line 1885, in _python_apply_general
+    values, mutated = self._grouper.apply_groupwise(f, data, self.axis)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alanromero/anaconda3/envs/itdp/lib/python3.11/site-packages/pandas/core/groupby/ops.py", line 919, in apply_groupwise
+    res = f(group)
+          ^^^^^^^^
+  File "/home/alanromero/alan/traffic-conflicts-analysis/src/TTC-Estimator/System/App/CollisionDataProcessor/CollisionDataProcessor.py", line 35, in calculate_velocity
+    frame_period = group['sampling_period'][0].total_seconds()
+                 ~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/home/alanromero/anaconda3/envs/itdp/lib/python3.11/site-packages/pandas/core/series.py", line 1121, in __getitem__
+    return self._get_value(key)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/alanromero/anaconda3/envs/itdp/lib/python3.11/site-packages/pandas/core/series.py", line 1237, in _get_value
+    loc = self.index.get_loc(label)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/alanromero/anaconda3/envs/itdp/lib/python3.11/site-packages/pandas/core/indexes/base.py", line 3812, in get_loc
+    raise KeyError(key) from err
+
+>>>>>>>>>>>>>>[ERROR_DESC]<<<<<<<<<<<<<<<
+
+  [KeyError]:0
+
+>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<
+

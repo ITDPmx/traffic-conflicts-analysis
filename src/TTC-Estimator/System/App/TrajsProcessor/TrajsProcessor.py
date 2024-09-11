@@ -157,6 +157,10 @@ class TrajsProcessor (Borg):
 
     def interpolate_data(self):
         self.df = self.split_dir_vect(self.df)
+        # Calculate the sampling period in seconds
+        self.df['sampling_period'] = 1 / self.df['fps']
+        # Convert the sampling period to timedelta type
+        self.df['sampling_period'] = pd.to_timedelta(self.df['sampling_period'], unit='s')
         self.df = self.df.groupby('id').apply(self.interpolate_group).reset_index(drop=True)
         self.df = self.combine_dir_vect(self.df)
         self.apply_nms_and_merge_ids()
@@ -191,12 +195,12 @@ class TrajsProcessor (Borg):
         if len(group) < 2:
             return group
         oidx = group.index
-        nidx = pd.date_range(oidx.min(), oidx.max(), freq='50.4ms')
+        nidx = pd.date_range(oidx.min(), oidx.max(), freq= group['sampling_period'].iloc[0])
         interpolated_columns = {}
         for col in ['x', 'y', 'w', 'h', 'dir_vect_x', 'dir_vect_y', 'velocity_km_per_h', 'scale_factor']:
             interpolated_columns[col] = group[col].reindex(oidx.union(nidx)).interpolate('index').reindex(nidx)
         interpolated_group = pd.DataFrame(interpolated_columns, index=nidx)
-        for col in ['id', 'label', 'fps', 'obb_flag', 'conf']:
+        for col in ['id', 'label', 'fps', 'sampling_period', 'obb_flag', 'conf']:
             interpolated_group[col] = group[col].reindex(nidx, method='ffill')
         interpolated_group = interpolated_group.reset_index().rename(columns={'index': 'timestamp'})
         min_frame_ix = group['frame_ix'].min()

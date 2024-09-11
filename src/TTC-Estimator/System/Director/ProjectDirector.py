@@ -10,6 +10,7 @@ from Generic.Director.GenericProjectDirector import GenericProjectDirector
 from System.App.OBBDetector.OBBDetector import OBBDetector
 from System.App.OBBVisualization.OBBVisualization import OBBVisualization
 from System.App.TrajsProcessor.TrajsProcessor import TrajsProcessor
+from System.App.CollisionDataProcessor.CollisionDataProcessor import CollisionDataProcessor
 
 #Director class
 class ProjectDirector( GenericProjectDirector ):
@@ -69,6 +70,17 @@ class ProjectDirector( GenericProjectDirector ):
         output_path = 'videos/obb_processed.mp4'
         obbvis = OBBVisualization(video_path, output_path, df)
         obbvis.process_video()
+
+        #Step 04: Calling TTC Estimator
+
+        colProc = CollisionDataProcessor(df)
+        colProc.preprocess_data()
+        colProc.generate_pairs()
+        colProc.calculate_ttc()
+        colProc.calculate_severity()
+        colProc.filter_data()
+        colProc.aggregate_data()
+        colProc.save_to_csv()
 
         self.ctx['__obj']['__log'].setLog('Finished')
         #Bye
