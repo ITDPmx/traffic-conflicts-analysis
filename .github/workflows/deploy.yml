@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main  # replace with your branch name
+      - vision  # replace with your branch name
 
 jobs:
   deploy:
