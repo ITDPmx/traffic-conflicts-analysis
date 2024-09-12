@@ -7,3 +7,6 @@ SQLAlchemy
 pandas
 opencv-python
 pytest
+shapely
+flow-vis
+ultralytics

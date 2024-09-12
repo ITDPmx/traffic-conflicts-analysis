@@ -16,5 +16,10 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            mkdir hola
+            cd traffic-conflicts-analysis
+            git pull
+            cd src/TTC-Estimator
+            python main.py
+
+
             
