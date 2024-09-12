@@ -19,7 +19,7 @@ jobs:
             cd traffic-conflicts-analysis
             git pull
             cd src/TTC-Estimator
-            python main.py
+            python3 main.py
 
 
             
