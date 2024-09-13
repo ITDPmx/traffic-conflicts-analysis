@@ -18,9 +18,9 @@ jobs:
           script: |
             cd traffic-conflicts-analysis
             git pull
-            cd src/TTC-Estimator
-            source ~/anaconda3/bin/activate base 
-            python main.py
+
+
+
 
 
             

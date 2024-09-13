@@ -10,3 +10,6 @@ pytest
 shapely
 flow-vis
 ultralytics
+boto3
+fastapi
+uvicorn

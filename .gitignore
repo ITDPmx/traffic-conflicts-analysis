@@ -2,5 +2,8 @@
 
 *.pt
 *.mp4
+*.pth
 *.env
 *__pycache__
+*.log
+*.pyc
