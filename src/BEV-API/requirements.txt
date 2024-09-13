@@ -5,3 +5,4 @@ matplotlib
 flask
 python-dotenv
 boto3
+requests
