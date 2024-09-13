@@ -421,7 +421,6 @@ class BEV:
 
         data = np.load('BEV/data/cnn_parameters/carlavp-299x299_label_to_horvpz_fov_pitch.npz')
         train_dir = 'BEV/data/saved_models/incp4/model.ckpt-17721'
-
         all_bins = data['all_bins']
         all_sphere_centres = data['all_sphere_centres']
         all_sphere_radii = data['all_sphere_radii']
