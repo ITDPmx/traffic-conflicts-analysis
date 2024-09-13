@@ -11,6 +11,7 @@ from timeit import default_timer as timer
 import boto3
 from botocore.exceptions import NoCredentialsError
 from dotenv import load_dotenv
+import pathlib
 
 import cv2
 import matplotlib.pyplot as plt
@@ -419,7 +420,8 @@ class BEV:
         net_height = 299
         consider_top = 53
 
-        data = np.load('BEV/data/cnn_parameters/carlavp-299x299_label_to_horvpz_fov_pitch.npz')
+        path = str(pathlib.Path(__file__).parent) + 'BEV/data/cnn_parameters/carlavp-299x299_label_to_horvpz_fov_pitch.npz'
+        data = np.load(path)
         train_dir = 'BEV/data/saved_models/incp4/model.ckpt-17721'
         all_bins = data['all_bins']
         all_sphere_centres = data['all_sphere_centres']
@@ -513,7 +515,7 @@ class BEV:
         # Save in shared memory
         np.savetxt('/shared_data/homography_matrix.txt', scaled_overhead_hmatrix)
         np.savetxt('/shared_data/target_dim.txt', target_dim)
-        
+
         print("Homography matrix saved to the text file:", txt_file)
         print("------------------------------------------------")
 
