@@ -16,6 +16,7 @@ def get_homography_BEV():
     frame = BEV.getFrame(bucket, path)
     BEV.get_homography(frame, path)
 
+    response = requests.post('http://service2:8001/process_video', json={"bucket": bucket, "path": path})
     return jsonify({"result": "Success"})
 
 
@@ -26,7 +27,6 @@ def get_matrix():
     BEV.getMatrix(bucket, path)
     print("Matrix generated")
     
-    response = requests.post('http://service2:8001/process_video', json={"bucket": bucket, "path": path})
     return jsonify({"result": "Success"})
 
 
