@@ -48,11 +48,18 @@ class OBBDetector (Borg):
     def process_video(self):
         frame_ix = 0
         ret, frame = self.video.read()
+        scaled_overhead_hmatrix = np.loadtxt("matrix.txt")
+        dsizes = np.loadtxt("dsizes.txt", dtype=int)
+        print("AAaaaaa")
+        print(dsizes)
+
         for _ in range(self.frames - 1):
             ret, frame_sig = self.video.read()
             if not ret:
                 continue
 
+            frame = cv2.warpPerspective(frame, scaled_overhead_hmatrix, dsize=(dsizes[0], dsizes[1]), flags=cv2.INTER_CUBIC)
+            cv2.imwrite("frame.png", frame)
             act = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             sig = cv2.cvtColor(frame_sig, cv2.COLOR_BGR2GRAY)
             results_2d = self.model.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False, classes=self.clasess_to_track)
