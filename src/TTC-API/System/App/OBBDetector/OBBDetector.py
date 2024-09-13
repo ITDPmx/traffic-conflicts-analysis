@@ -48,10 +48,8 @@ class OBBDetector (Borg):
     def process_video(self):
         frame_ix = 0
         ret, frame = self.video.read()
-        scaled_overhead_hmatrix = np.loadtxt("matrix.txt")
-        dsizes = np.loadtxt("dsizes.txt", dtype=int)
-        print("AAaaaaa")
-        print(dsizes)
+        scaled_overhead_hmatrix = np.loadtxt("/shared_data/homography_matrix.txt")
+        dsizes = np.loadtxt("/shared_data/target_dim.txt", dtype=int)
 
         for _ in range(self.frames - 1):
             ret, frame_sig = self.video.read()
