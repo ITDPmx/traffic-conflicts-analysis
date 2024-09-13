@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from BEV.BEV import BEV
-import request
+import requests
 
 app = Flask(__name__)
 
