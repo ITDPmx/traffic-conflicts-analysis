@@ -6,6 +6,11 @@ import numpy as np
 #Generic director
 from Generic.Director.GenericProjectDirector import GenericProjectDirector
 
+#AWS
+import boto3
+from botocore.exceptions import NoCredentialsError
+from dotenv import load_dotenv
+
 #Local imports
 from System.App.OBBDetector.OBBDetector import OBBDetector
 from System.App.OBBVisualization.OBBVisualization import OBBVisualization
@@ -30,10 +35,20 @@ class ProjectDirector( GenericProjectDirector ):
                     },
                 }
             )
-        
-        
 
-    
+        load_dotenv()
+        AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY") 
+        AWS_BUCKET_NAME = 'homography-matrices'
+        AWS_REGION = 'us-east-2'
+
+        self.S3_CLIENT = boto3.client(
+            's3',
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            region_name=AWS_REGION
+        ) 
+        
     #-----------------------------------------------------------------------------------------------------------------------------
     def __play( self, what, value_a, value_b ):
         """
@@ -46,8 +61,14 @@ class ProjectDirector( GenericProjectDirector ):
         self.ctx['__obj']['__log'].setDebug( self.ctx ) 
 
         prevtime = time.time()
+
+        # Get video from bucket
+        os.makedirs('videos', exist_ok=True)
+        new_path = "videos/test"
+        self.S3_CLIENT.download_file(value_a, value_b, new_path)
+
         # obb detector 
-        video_path = "videos/181653_cam3_bev.mp4"
+        video_path = new_path
         model_path = "weights/yolov9e-seg.pt"
         model_obb_path = "weights/yolo_obb.pt"
         model_WHE_path = 'weights/best_width_height_estimator.pth'
@@ -87,7 +108,7 @@ class ProjectDirector( GenericProjectDirector ):
         return None
     
     #-----------------------------------------------------------------------------------------------------------------------------
-    def setFlux( self, argv ):
+    def setFlux( self, argv, bucket, path ):
         """
         Main API starter objects multiprocessing
         """
@@ -122,8 +143,8 @@ class ProjectDirector( GenericProjectDirector ):
                 (
                     '-d' if what is None else what 
                 ), 
-                value_a, 
-                value_b 
+                bucket, 
+                path
             )
         #Invalid argument?
         else:
@@ -134,8 +155,8 @@ class ProjectDirector( GenericProjectDirector ):
     
     #-----------------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def go( argv ):
+    def go( argv, bucket, path ):
         """
         Main API starting flux
         """
-        ProjectDirector().setFlux( argv )
+        ProjectDirector().setFlux( argv, bucket, path )

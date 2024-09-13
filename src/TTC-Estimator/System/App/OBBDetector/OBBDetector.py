@@ -39,6 +39,7 @@ class OBBDetector (Borg):
         self.model_WHE = WidthHeightModel()
         self.model_WHE.load_state_dict(torch.load(model_WHE_path))
         self.model_WHE.eval()
+        self.clasess_to_track = [4,5,0,7,3,1]
         self.class_mapping = {0: "car", 1: "truck", 2: "van", 3: "bus", 4: "pedestrian", 5: "cyclist", 6: "tricyclist", 7: "motorcyclist"}
         self.labels_map = {0: 4, 1: 5, 2: 0, 3: 7, 5: 3, 7: 1}
         self.labels_map_coco = {0: "pedestrian", 1: "cyclist", 2: "car", 3: "motorcyclist", 5: "bus", 7: "truck"}
@@ -54,7 +55,7 @@ class OBBDetector (Borg):
 
             act = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             sig = cv2.cvtColor(frame_sig, cv2.COLOR_BGR2GRAY)
-            results_2d = self.model.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False)
+            results_2d = self.model.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False, classes=self.clasess_to_track)
             results_obb = self.model_obb.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False)
             timestamp = self.video.get(cv2.CAP_PROP_POS_MSEC)
             self.process_frame(frame, frame_sig, act, sig, results_2d, results_obb, timestamp, frame_ix)
