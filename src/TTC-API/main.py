@@ -20,7 +20,7 @@ class FileRequest(BaseModel):
     bucket: str
     path: str
 
-@app.get("/process_video")
+@app.post("/process_video")
 def process_video(request: FileRequest):
     bucket = request.bucket
     path = request.path
