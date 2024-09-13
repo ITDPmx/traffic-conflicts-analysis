@@ -420,7 +420,7 @@ class BEV:
         net_height = 299
         consider_top = 53
 
-        path = str(pathlib.Path(__file__).parent) + 'BEV/data/cnn_parameters/carlavp-299x299_label_to_horvpz_fov_pitch.npz'
+        path = str(pathlib.Path(__file__).parent) + '/data/cnn_parameters/carlavp-299x299_label_to_horvpz_fov_pitch.npz'
         data = np.load(path)
         train_dir = 'BEV/data/saved_models/incp4/model.ckpt-17721'
         all_bins = data['all_bins']
