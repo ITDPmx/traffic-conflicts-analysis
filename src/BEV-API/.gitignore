@@ -1,0 +1,5 @@
+BEV/data/*
+*__pycache__
+
+*.env
+BEV/.env
