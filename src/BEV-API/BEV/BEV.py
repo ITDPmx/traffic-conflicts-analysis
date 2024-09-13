@@ -498,16 +498,22 @@ class BEV:
         txt_file = 'BEV/output/' + img_path[img_path.rfind('/') + 1:img_path.rfind(
             '.')] + '_homography_matrix_' + "inception-v4" + '.txt'
 
-        np.savetxt(txt_file, scaled_overhead_hmatrix)
+        # np.savetxt(txt_file, scaled_overhead_hmatrix)
         
-        filename = "matrices/" + img_path[img_path.rfind('/') + 1:img_path.rfind(
-            '.')] + ".txt"
+        # filename = "matrices/" + img_path[img_path.rfind('/') + 1:img_path.rfind(
+        #     '.')] + ".txt"
 
         # Add target dimensions to file
         with open(txt_file, 'a') as file:
             file.write(str(target_dim[0]) + " " + str(target_dim[1]))
-            
-        cls.uploadFile(txt_file, filename)
+
+        # Upload to bucket    
+        # cls.uploadFile(txt_file, filename)
+
+        # Save in shared memory
+        np.savetxt('/shared_data/homography_matrix.txt', scaled_overhead_hmatrix)
+        np.savetxt('/shared_data/target_dim.txt', target_dim)
+        
         print("Homography matrix saved to the text file:", txt_file)
         print("------------------------------------------------")
 

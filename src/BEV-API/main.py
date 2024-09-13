@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from BEV.BEV import BEV
+import request
 
 app = Flask(__name__)
 
@@ -23,7 +24,9 @@ def get_matrix():
     bucket = request.get_json()["bucket"]
     path = request.get_json()["path"]
     BEV.getMatrix(bucket, path)
-
+    print("Matrix generated")
+    
+    response = requests.post('http://service2:8001/process_video', json={"bucket": bucket, "path": path})
     return jsonify({"result": "Success"})
 
 
