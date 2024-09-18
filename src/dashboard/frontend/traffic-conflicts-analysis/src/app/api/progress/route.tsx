@@ -22,21 +22,18 @@ const caller = createCaller({
 });
 
 const updateProgress = async (req: NextRequest) => {
-  const searchParams = req.nextUrl.searchParams;
-  const id = z.string().safeParse(searchParams.get("id")).data;
+  const { id, progress } = await req.json();
+  const idProcessed = z.string().safeParse(id).data;
+  const progressProcessed = z.number().safeParse(progress).data;
 
-  const progress = z
-    .number()
-    .safeParse(searchParams.get("progress")).data;
-
-  if (!id) {
+  if (!idProcessed) {
     return NextResponse.json(
       { error: { message: "No video id provided" } },
       { status: 400 },
     );
   }
 
-  if (!progress) {
+  if (!progressProcessed) {
     return NextResponse.json(
       { error: { message: "No progress" } },
       { status: 400 },
@@ -44,7 +41,7 @@ const updateProgress = async (req: NextRequest) => {
   }
 
   try {
-    await caller.video.updateProgress({ videoId: id, progress: progress ?? 0 });
+    await caller.video.updateProgress({ videoId: idProcessed, progress: progressProcessed});
     return NextResponse.json({ data: { available: true } });
   } catch (cause) {
     if (cause instanceof TRPCError) {

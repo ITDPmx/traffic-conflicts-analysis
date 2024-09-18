@@ -82,4 +82,16 @@ export const videoRouter = createTRPCRouter({
         },
       });
     }),
+
+    getLastVideo: protectedProcedure
+    .query(async ({ ctx }) => {
+      return await ctx.db.video.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    }),
 });
