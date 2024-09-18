@@ -15,6 +15,8 @@ export default function Home() {
   const [duration, setDuration] = useState(-1);
   const [progress, setProgress] = useState(0);
 
+  const {data: lastFile} = api.video.getLastVideo.useQuery();
+
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -180,17 +182,19 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="justify-b shadow-full-border mr-[10%] flex flex-col items-center justify-around gap-y-12 rounded-3xl py-12">
+          <div className="justify-b shadow-full-border mr-[10%] flex flex-col items-center justify-around gap-y-4 rounded-3xl py-12">
             <h2 className="text-3xl font-bold text-verde">Resultados</h2>
+            {lastFile && (<h2 className="text-lg font-bold mb-8">({lastFile.name})</h2>)}
+
             <CircularProgressbar
-              className="h-32 text-verde"
+              className="h-32 text-verde mb-8"
               styles={buildStyles({
                 textColor: "#00A94F",
                 backgroundColor: "#00A94F",
                 pathColor: "#00A94F",
               })}
-              value={0}
-              text={`0%`}
+              value={lastFile?.progress ?? 0}
+              text={`${lastFile?.progress ?? 0}%`}
             />
             <button className="rounded-lg bg-verde px-12 py-3 text-2xl font-bold text-white">
               Descargar
