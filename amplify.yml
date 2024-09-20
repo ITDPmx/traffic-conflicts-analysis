@@ -9,6 +9,7 @@ applications:
           commands:
             - env | grep -e DATABASE_URL -e NEXTAUTH_SECRET -e NEXTAUTH_URL -e GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET >> .env
             - env | grep -e IAWS_BUCKET_NAME -e IAWS_REGION -e IAWS_SECRET_ACCESS_KEY -e IAWS_ACCESS_KEY_ID >> .env
+            - env | grep -e IAWS_INSTANCE_ID -e IAWS_EC2_ACCESS_KEY_ID -e IAWS_EC2_SECRET_ACCESS_KEY >> .env
             - npm run build
       artifacts:
         baseDirectory: .next
