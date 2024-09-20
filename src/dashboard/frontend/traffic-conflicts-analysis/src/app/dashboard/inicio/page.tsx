@@ -5,6 +5,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { api } from "~/trpc/react";
 import "react-circular-progressbar/dist/styles.css";
 import BeatLoader from "react-spinners/BeatLoader";
+import { twMerge } from "tailwind-merge";
 
 import axios from "axios";
 import Link from "next/link";
@@ -15,7 +16,9 @@ export default function Home() {
   const [duration, setDuration] = useState(-1);
   const [progress, setProgress] = useState(0);
 
-  const {data: lastFile} = api.video.getLastVideo.useQuery();
+  const { data: lastFile } = api.video.getLastVideo.useQuery();
+
+  const { data: isInstanceOn, isLoading } = api.aws.isInstanceOn.useQuery();
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -75,7 +78,9 @@ export default function Home() {
 
   return (
     <div className="flex h-[90vh] flex-col justify-between">
-      <div className="h-[2vh]"><p className="text-white">a</p></div>
+      <div className="h-[2vh]">
+        <p className="text-white">a</p>
+      </div>
       <div className="flex flex-col md:flex-row">
         <div className="box-border w-full md:w-[70%]">
           <div className="flex flex-col gap-y-8">
@@ -83,7 +88,7 @@ export default function Home() {
               <div className="flex h-16 w-16 items-center justify-center rounded-full border-4  border-verde p-7 text-3xl font-bold text-gris">
                 1
               </div>
-              <div className="mx-5 mb-5 flex flex-col items-start gap-y-6 text-lg max-w-[50%]">
+              <div className="mx-5 mb-5 flex max-w-[50%] flex-col items-start gap-y-6 text-lg">
                 <p>
                   Sube un video de una intersección vial para analizar e
                   identificar los conflictos viales entre peatones, ciclistas y
@@ -105,14 +110,26 @@ export default function Home() {
                 </p>
               )}
 
+            {!isLoading && isInstanceOn &&
+                (<h3 className="text-center text-red-500 text-lg">
+                  Atención: el servidor de análisis se encuentra ocupado. Regresa más tarde para subir tu video.
+                </h3>
+              )}
+
             <div className="flex flex-row flex-wrap justify-around gap-y-4">
               <div className="ml-4 flex flex-row rounded-md border-2 border-black">
-                <label className="custom-file-upload border-r-2 border-black bg-verde p-3 text-center text-2xl font-bold text-white">
+                <label
+                  className={twMerge(
+                    "custom-file-upload border-r-2 border-black bg-gray-400  p-3 text-center text-2xl font-bold text-white",
+                    !isInstanceOn ? "bg-verde" : "",
+                  )}
+                >
                   <input
                     type="file"
                     className="hidden"
                     onChange={handleFileUpload}
                     accept="video/*"
+                    disabled={isInstanceOn}
                   />
                   Escoger archivo
                 </label>
@@ -122,7 +139,11 @@ export default function Home() {
               </div>
 
               <button
-                className="rounded-lg bg-verde px-12 py-3 text-2xl font-bold text-white"
+                disabled={!isInstanceOn}
+                className={twMerge(
+                  "rounded-lg bg-gray-400  px-12 py-3 text-2xl font-bold text-white",
+                  !isInstanceOn ? "bg-verde" : "",
+                )}
                 onClick={async () => {
                   if (
                     selectedFile &&
@@ -151,7 +172,7 @@ export default function Home() {
               isExtensionSupported(selectedFile.name, supportedExtensions) ? (
                 <video ref={videoRef} width="800" controls className="m-auto" />
               ) : (
-                <div className="shadow-full-border mx-auto flex h-[350px] w-[60%] rounded-lg">
+                <div className="mx-auto flex h-[350px] w-[60%] rounded-lg shadow-full-border">
                   <img
                     alt="Image Placeholder"
                     className="m-auto w-[200px]"
@@ -182,12 +203,14 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="justify-b shadow-full-border mr-[10%] flex flex-col items-center justify-around gap-y-4 rounded-3xl py-12">
+          <div className="justify-b mr-[10%] flex flex-col items-center justify-around gap-y-4 rounded-3xl py-12 shadow-full-border">
             <h2 className="text-3xl font-bold text-verde">Resultados</h2>
-            {lastFile && (<h2 className="text-lg font-bold mb-8">({lastFile.name})</h2>)}
+            {lastFile && (
+              <h2 className="mb-8 text-lg font-bold">({lastFile.name})</h2>
+            )}
 
             <CircularProgressbar
-              className="h-32 text-verde mb-8"
+              className="mb-8 h-32 text-verde"
               styles={buildStyles({
                 textColor: "#00A94F",
                 backgroundColor: "#00A94F",
