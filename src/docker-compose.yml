@@ -1,5 +1,6 @@
 
-
+version: '3.8'
+ 
 services:
   bev:
     build:
@@ -9,16 +10,18 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_VISIBLE_DEVICES=0  # Use GPU 0
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0  # Use GPU 0
     deploy:
       resources:
         reservations:
           devices:
             - capabilities: [gpu]
     volumes:
-      - shared_data:/shared_data
-
+      - ./host_shared_data:/shared_data
+      # - shared_data:/shared_data
+ 
   ttc:
     build:
       context: ./TTC-API
@@ -27,15 +30,19 @@ services:
     ports:
       - "8001:8001"
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_VISIBLE_DEVICES=0  # Use GPU 0
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0  # Use GPU 0
     deploy:
       resources:
         reservations:
           devices:
             - capabilities: [gpu]
     volumes:
-      - shared_data:/shared_data
-
+      - ./host_shared_data:/shared_data
+      # - shared_data:/shared_data
+    depends_on:
+      - bev
+ 
 volumes:
   shared_data:

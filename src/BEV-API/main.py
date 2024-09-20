@@ -10,13 +10,14 @@ def hello_world():
 
 @app.route('/birdsEyeView', methods=['POST'])
 def get_homography_BEV():
+    id_video = request.get_json()["id"]
     bucket = request.get_json()["bucket"]
     path = request.get_json()["path"]
-    
-    frame = BEV.getFrame(bucket, path)
-    BEV.get_homography(frame, path)
 
-    response = requests.post('http://ttc:8001/process_video', json={"bucket": bucket, "path": path})
+    frame = BEV.getFrame(bucket, path, id_video)
+    BEV.get_homography(frame, path, id_video)
+
+    response = requests.post('http://ttc:8001/process_video', json={"id_video": id_video})
     return jsonify({"result": "Success"})
 
 

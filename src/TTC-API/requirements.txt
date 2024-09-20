@@ -14,3 +14,4 @@ boto3
 fastapi
 uvicorn
 python-dotenv
+lapx>=0.5.2

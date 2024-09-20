@@ -17,15 +17,12 @@ app = FastAPI()
 
 # Base
 class FileRequest(BaseModel):
-    bucket: str
-    path: str
+    id_video: str
 
 @app.post("/process_video")
 def process_video(request: FileRequest):
-    bucket = request.bucket
-    path = request.path
-    print( bucket )
-    ProjectDirector.go( sys.argv, bucket, path )
+    id_video = request.id_video
+    ProjectDirector.go( sys.argv, id_video )
 
 @app.get("/")
 def read_root():

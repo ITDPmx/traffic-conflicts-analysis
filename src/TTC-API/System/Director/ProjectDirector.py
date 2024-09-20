@@ -3,6 +3,8 @@ import os
 import time
 from glob import glob
 import numpy as np
+import requests
+
 #Generic director
 from Generic.Director.GenericProjectDirector import GenericProjectDirector
 
@@ -50,7 +52,7 @@ class ProjectDirector( GenericProjectDirector ):
         ) 
         
     #-----------------------------------------------------------------------------------------------------------------------------
-    def __play( self, what, value_a, value_b ):
+    def __play( self, what, id_video ):
         """
         Main API starter objects flux
         """
@@ -63,18 +65,26 @@ class ProjectDirector( GenericProjectDirector ):
         prevtime = time.time()
 
         # Get video from bucket
-        os.makedirs('videos', exist_ok=True)
-        new_path = "videos/test"
-        self.S3_CLIENT.download_file(value_a, value_b, new_path)
-
+        # os.makedirs('videos', exist_ok=True)
+        # new_path = "videos/test"
+        # self.S3_CLIENT.download_file(bucket, path, new_path)
+        
         # obb detector 
-        video_path = new_path
+        video_path = '/shared_data/bev_' + id_video + '.mp4'
+        # video_path = 'videos/181653_cam3_bev.mp4'
+        # bev_path = "/shared_data/bev_" + id_video + ".mp4"
         model_path = "weights/yolov9e-seg.pt"
         model_obb_path = "weights/yolo_obb.pt"
         model_WHE_path = 'weights/best_width_height_estimator.pth'
-        obb_processor = OBBDetector(video_path, model_path, model_obb_path, model_WHE_path)
+        obb_processor = OBBDetector(video_path, id_video, model_path, model_obb_path, model_WHE_path)
         df = obb_processor.process_video()
         self.ctx['__obj']['__log'].setLog(f"Video {video_path} processed in {time.time() - prevtime} seconds")  
+        # Check if df is empty
+        if df.empty:
+            print("There are no detections in the video.")
+            return None
+        else: 
+            print("There were " + str(len(df)) + " detections in the video.")
 
         #Step 02: Calling Trajs processor
         prevtime = time.time()
@@ -86,12 +96,21 @@ class ProjectDirector( GenericProjectDirector ):
         self.ctx['__obj']['__log'].setLog(f"Trajectories processed in {time.time() - prevtime} seconds")  
         df = trajs_processor.df
 
+        df.to_csv('/shared_data/df.csv')
+
+        
+
         #Step 03: Calling OBB visualization
 
-        output_path = 'videos/obb_processed.mp4'
+        output_path = '/shared_data/obb_processed.mp4'
+        # output_path = 'processed_videos/video' + id_video + '.mp4'
         obbvis = OBBVisualization(video_path, output_path, df)
         obbvis.process_video()
+        bucket_path = 'processed_videos/video' + id_video + '.mp4'
+        obb_processor.uploadFile(output_path, bucket_path)
+        response = requests.post('https://tca.mexico.itdp.org/api/progress', json={"id": id_video, "progress": 95 })
 
+        """
         #Step 04: Calling TTC Estimator
 
         colProc = CollisionDataProcessor(df)
@@ -102,13 +121,18 @@ class ProjectDirector( GenericProjectDirector ):
         colProc.filter_data()
         colProc.aggregate_data()
         colProc.save_to_csv()
-
+        col_file = 'reports/collision_data' + id_video + '.csv'
+        summary_file = 'reports/collision_data_summary' + id_video + '.csv'
+        obb_processesor.uploadFile(col_file, 'csvs/collision_data.csv')
+        obb_processesor.uploadFile(summary_file, 'csvs/collision_data_summary.csv')
+        response = requests.post('https://tca.mexico.itdp.org/api/progress', json={"id": id_video, "progress": 100 })
+        """
         self.ctx['__obj']['__log'].setLog('Finished')
         #Bye
         return None
     
     #-----------------------------------------------------------------------------------------------------------------------------
-    def setFlux( self, argv, bucket, path ):
+    def setFlux( self, argv, id_video):
         """
         Main API starter objects multiprocessing
         """
@@ -143,8 +167,7 @@ class ProjectDirector( GenericProjectDirector ):
                 (
                     '-d' if what is None else what 
                 ), 
-                bucket, 
-                path
+                id_video
             )
         #Invalid argument?
         else:
@@ -155,8 +178,8 @@ class ProjectDirector( GenericProjectDirector ):
     
     #-----------------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def go( argv, bucket, path ):
+    def go( argv, id_video ):
         """
         Main API starting flux
         """
-        ProjectDirector().setFlux( argv, bucket, path )
+        ProjectDirector().setFlux( argv, id_video)

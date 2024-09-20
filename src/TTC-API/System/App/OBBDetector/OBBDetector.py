@@ -10,6 +10,11 @@ import pandas as pd
 from Generic.Global.Borg import Borg
 from System.App.WidthHeightModel.WidthHeightModel import WidthHeightModel
 
+#AWS
+import boto3
+from botocore.exceptions import NoCredentialsError
+from dotenv import load_dotenv
+import os
 
 class OBBDetector (Borg):
 
@@ -21,7 +26,7 @@ class OBBDetector (Borg):
 
     #-----------------------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, video_path: str, model_path: str, model_obb_path: str, model_WHE_path: str) -> None:
+    def __init__(self, video_path: str, id_video, model_path: str, model_obb_path: str, model_WHE_path: str) -> None:
         """
         Class builder, all the contextual configurations are charged from the base class (borg pattern) in a shared state
         Returns:
@@ -29,12 +34,16 @@ class OBBDetector (Borg):
         """
         #Setting contextual generic objects
         super().__init__()
+        self.id_video = id_video
         self.GP = self.ctx['__obj']['__global_procedures']
         self.video = cv2.VideoCapture(video_path)
         self.model = YOLO(model_path)
         self.model_obb = YOLO(model_obb_path)
         self.fps = self.video.get(cv2.CAP_PROP_FPS)
         self.frames = int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
+        # self.hmatrix = np.loadtxt("/shared_data/homography_matrix.txt")
+        # self.target_dim = np.loadtxt("/shared_data/target_dim.txt", dtype=int)
+        # self.out = cv2.VideoWriter(bev_path, cv2.VideoWriter_fourcc(*'XVID'), self.fps, self.target_dim)
         self.data = []  # List to store data for DataFrame
         self.model_WHE = WidthHeightModel()
         self.model_WHE.load_state_dict(torch.load(model_WHE_path))
@@ -42,22 +51,32 @@ class OBBDetector (Borg):
         self.clasess_to_track = [4,5,0,7,3,1]
         self.class_mapping = {0: "car", 1: "truck", 2: "van", 3: "bus", 4: "pedestrian", 5: "cyclist", 6: "tricyclist", 7: "motorcyclist"}
         self.labels_map = {0: 4, 1: 5, 2: 0, 3: 7, 5: 3, 7: 1}
-        self.labels_map_coco = {0: "pedestrian", 1: "cyclist", 2: "car", 3: "motorcyclist", 5: "bus", 7: "truck"}
+        self.labels_map_coco = {0: "pedestrian", 1: "cyclist", 2: "car", 3: "motorcyclist", 5: "bus", 7: "truck"}        
+        load_dotenv()
+        AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY") 
+        self.AWS_BUCKET_NAME = 'tca-tec'
+        AWS_REGION = 'us-east-2'
 
+        self.S3_CLIENT = boto3.client(
+            's3',
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            region_name=AWS_REGION
+        ) 
     #-----------------------------------------------------------------------------------------------------------------------------
     def process_video(self):
         frame_ix = 0
         ret, frame = self.video.read()
-        scaled_overhead_hmatrix = np.loadtxt("/shared_data/homography_matrix.txt")
-        dsizes = np.loadtxt("/shared_data/target_dim.txt", dtype=int)
-
+        # print(self.target_dim)
+        # frame = cv2.warpPerspective(frame, self.hmatrix, dsize=(self.target_dim[0], self.target_dim[1]), flags=cv2.INTER_CUBIC)
+        # self.out.write(frame)/
         for _ in range(self.frames - 1):
             ret, frame_sig = self.video.read()
             if not ret:
                 continue
 
-            frame = cv2.warpPerspective(frame, scaled_overhead_hmatrix, dsize=(dsizes[0], dsizes[1]), flags=cv2.INTER_CUBIC)
-            cv2.imwrite("frame.png", frame)
+            # frame_sig = cv2.warpPerspective(frame_sig, self.hmatrix, dsize=self.target_dim, flags=cv2.INTER_CUBIC)
             act = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             sig = cv2.cvtColor(frame_sig, cv2.COLOR_BGR2GRAY)
             results_2d = self.model.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False, classes=self.clasess_to_track)
@@ -66,8 +85,12 @@ class OBBDetector (Borg):
             self.process_frame(frame, frame_sig, act, sig, results_2d, results_obb, timestamp, frame_ix)
             frame_ix += 1
             frame = frame_sig.copy()
-
+            # self.out.write(frame)
+            if frame_ix % (self.frames/50) == 0: #each 2% progress
+                response = requests.post('https://tca.mexico.itdp.org/api/progress', json={"id": self.id_video, "progress": (frame_ix/self.frames)*90 })
+        
         self.video.release()
+        # self.out.release()
         return pd.DataFrame(self.data)
 
     #-----------------------------------------------------------------------------------------------------------------------------
@@ -86,6 +109,13 @@ class OBBDetector (Borg):
             filtered_boxes_2d = [boxes_2d[i] for i in indices]
             self.extract_trajs_atts( filtered_boxes, filtered_track_ids, filtered_masks, filtered_boxes_2d, boxes_obb, flow_mag_color, flow, self.fps, timestamp, frame_ix)
 
+    def uploadFile(self, file, filename):
+        try:
+            with open(file, 'rb') as file:
+                self.S3_CLIENT.upload_fileobj(file, self.AWS_BUCKET_NAME, filename)
+            print("File uploaded successfully to bucket with key")
+        except Exception as e:
+            print("An error occurred")
 
     @staticmethod
     def get_masks_and_flow(act: np.ndarray, sig: np.ndarray, results_2d) -> Tuple[List[np.ndarray], Optional[np.ndarray], Optional[np.ndarray]]:

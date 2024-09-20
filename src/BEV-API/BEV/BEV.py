@@ -12,6 +12,7 @@ import boto3
 from botocore.exceptions import NoCredentialsError
 from dotenv import load_dotenv
 import pathlib
+import gc
 
 import cv2
 import matplotlib.pyplot as plt
@@ -376,20 +377,19 @@ class BEV:
     )
 
     @classmethod
-    def getFrame(cls, bucket, path):
+    def getFrame(cls, bucket, path, id_video):
         """
         This method download a file video given a 
         bucket and object file path
         """
 
         os.makedirs('videos', exist_ok=True)
-        new_path = "videos/test"
+        new_path = '/shared_data/video' + id_video + '.mp4'
         cls.S3_CLIENT.download_file(bucket, path, new_path)
+        print("Video downloaded successfully")
 
         video = cv2.VideoCapture(new_path)
         ret, frame = video.read()
-        cv2.imwrite("videos/a.jpg",frame)
-
         return frame 
     
     @classmethod
@@ -413,9 +413,12 @@ class BEV:
         except Exception as e:
             print("An error occurred")
 
+    # @classmethod 
+    # def clean_memory(cls):
+        
 
     @classmethod
-    def get_homography(cls, img_cv, filename:str):
+    def get_homography2(cls, img_cv, filename:str):
         net_width = 299
         net_height = 299
         consider_top = 53
@@ -476,7 +479,9 @@ class BEV:
                                                                                         all_sphere_radii)
 
                     end = timer()
+                sess.close()
 
+        print("Memory released")
         print("Time taken: {0:.2f}s".format(end-start))
         print("Output of the code")
         print("------------------------------------------------")
@@ -505,6 +510,7 @@ class BEV:
         # filename = "matrices/" + img_path[img_path.rfind('/') + 1:img_path.rfind(
         #     '.')] + ".txt"
 
+ 
         # Add target dimensions to file
         with open(txt_file, 'a') as file:
             file.write(str(target_dim[0]) + " " + str(target_dim[1]))
@@ -516,6 +522,156 @@ class BEV:
         np.savetxt('/shared_data/homography_matrix.txt', scaled_overhead_hmatrix)
         np.savetxt('/shared_data/target_dim.txt', target_dim)
 
+        # Force garbage collection
+        gc.collect()
+        tf.compat.v1.reset_default_graph()
+        tf.keras.backend.clear_session()
         print("Homography matrix saved to the text file:", txt_file)
         print("------------------------------------------------")
+    
+    @classmethod
+    def save_bev_video(cls, video_path, output_path, matrix, target_dim):
+        cap = cv2.VideoCapture(video_path)
+        frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
+        # Define the codec and create VideoWriter object for the output video
+        # output_path = 'output_video.mp4'
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec for mp4 files
+        out = cv2.VideoWriter(output_path, fourcc, fps, (target_dim[0], target_dim[1]))
+        # out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+
+        # Loop through all the frames
+        while cap.isOpened():
+            ret, frame = cap.read()  # Read a frame from the input video
+            if not ret:
+                break  # Break the loop if no frame is returned (end of video)
+
+            # Optionally, you can process the frame here (e.g., apply filters, transformations, etc.)
+            frame = cv2.warpPerspective(frame, matrix, dsize=target_dim, flags=cv2.INTER_CUBIC)
+            cv2.imwrite('/shared_data/frame.jpg', frame)
+            # Write the frame to the output video
+            out.write(frame)
+
+        # Release the video capture and writer objects
+        cap.release()
+        out.release()
+
+    @classmethod
+    def get_homography(cls, img_cv, filename: str, id_video: str):
+        net_width = 299
+        net_height = 299
+        consider_top = 53
+ 
+        path = str(pathlib.Path(__file__).parent) + '/data/cnn_parameters/carlavp-299x299_label_to_horvpz_fov_pitch.npz'
+        data = np.load(path)
+        train_dir = 'BEV/data/saved_models/incp4/model.ckpt-17721'
+        all_bins = data['all_bins']
+        all_sphere_centres = data['all_sphere_centres']
+        all_sphere_radii = data['all_sphere_radii']
+ 
+        no_params_model = 4
+        num_bins = 500
+        img_path = filename
+        img_cv = cv2.cvtColor(img_cv, cv2.COLOR_BGR2RGB)
+        orig_height, orig_width, orig_channels = img_cv.shape
+ 
+        my_img = cv2.resize(img_cv, dsize=(net_width, net_height), interpolation=cv2.INTER_CUBIC)
+        my_img = (np.array(my_img, np.float32)) * (1. / 255)
+        my_img = (my_img - 0.5) * 2
+ 
+        with tf.Graph().as_default():
+            tf.logging.set_verbosity(tf.logging.INFO)
+ 
+            img = tf.reshape(my_img, [1, net_width, net_height, 3])
+ 
+            with slim.arg_scope(inception_v4.inception_v4_arg_scope()):
+                logits, _ = inception_v4.inception_v4(img, num_classes=num_bins * no_params_model, is_training=False)
+ 
+            probabilities = tf.nn.softmax(logits)
+ 
+            checkpoint_path = train_dir
+            init_fn = slim.assign_from_checkpoint_fn(
+                checkpoint_path,
+                slim.get_variables_to_restore())
+ 
+            # Configure GPU memory usage
+            gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=5 / 16)  # Assuming 16GB total GPU memory
+            config = tf.ConfigProto(gpu_options=gpu_options)
+ 
+            with tf.Session(config=config) as sess:
+                with slim.queues.QueueRunners(sess):
+                    sess.run(tf.initialize_local_variables())
+                    init_fn(sess)
+                    start = timer()
+                    np_probabilities, np_rawvals = sess.run([probabilities, logits])
+ 
+                    i = 0
+ 
+                    pred_indices = np.zeros(no_params_model, dtype=np.int)
+                    for ln in range(no_params_model):
+                        predsoft = my_softmax(np_rawvals[i, :].reshape(no_params_model, -1)[ln, :][np.newaxis])
+                        predsoft = predsoft.squeeze()
+ 
+                        topindices = predsoft.argsort()[::-1][:consider_top]
+                        probsindices = predsoft[topindices] / np.sum(predsoft[topindices])
+                        pred_indices[ln] = np.abs(int(np.round(np.sum(probsindices * topindices))))
+ 
+                    estimated_input_points = get_horvpz_from_projected_4indices_modified(pred_indices[:4],
+                                                                                        all_bins, all_sphere_centres,
+                                                                                        all_sphere_radii)
+ 
+                    end = timer()
+ 
+        print("Time taken: {0:.2f}s".format(end - start))
+        print("Output of the code")
+        print("------------------------------------------------")
+ 
+        fx, fy, roll_from_horizon, my_tilt = get_intrinisic_extrinsic_params_from_horizonvector_vpz(
+            img_dims=(orig_width, orig_height),
+            horizonvector_vpz=estimated_input_points,
+            net_dims=(net_width, net_height),
+            verbose=False)
+ 
+        overhead_hmatrix, est_range_u, est_range_v = get_overhead_hmatrix_from_4cameraparams(fx=fx, fy=fy,
+                                                                                         my_tilt=my_tilt,
+                                                                                         my_roll=-radians(
+                                                                                             roll_from_horizon),
+                                                                                         img_dims=(orig_width,
+                                                                                                   orig_height),
+                                                                                         verbose=False)
+        scaled_overhead_hmatrix, target_dim = get_scaled_homography(overhead_hmatrix, 1080 * 2, est_range_u, est_range_v)
+        
+        video_path = '/shared_data/video' + id_video + '.mp4'
+        output_path = '/shared_data/bev_' + id_video + '.mp4'
+        cls.save_bev_video(video_path, output_path, scaled_overhead_hmatrix, target_dim)
+        # print("target dim: ", target_dim)
+        # os.makedirs("BEV/output/", exist_ok=True)
+        # txt_file = 'BEV/output/' + img_path[img_path.rfind('/') + 1:img_path.rfind(
+        #     '.')] + '_homography_matrix_' + "inception-v4" + '.txt'
+ 
+        # # Add target dimensions to file
+        # with open(txt_file, 'a') as file:
+        #     file.write(str(target_dim[0]) + " " + str(target_dim[1]))
+
+        # dim = str(target_dim[0]) + " " + str(target_dim[1])
+        # dim_file = '/shared_data/target_dim.txt'
+        # with open(dim_file, 'w') as file:
+        #     file.write(dim)
+        # Save in shared memory
+        # cls.uploadFile(txt_file, scal)
+        np.savetxt('/shared_data/homography_matrix.txt', scaled_overhead_hmatrix)
+        np.savetxt('/shared_data/target_dim.txt', target_dim)
+        # np.savetxt('/shared_data/target_dim.txt', dim)
+ 
+        # print("Homography matrix saved to the text file:", txt_file)
+        # print("------------------------------------------------")
+ 
+        # Clear the TensorFlow session
+        tf.keras.backend.clear_session()
+ 
+        # Force garbage collection
+        gc.collect()
+        print("Memory releaseddddd")
