@@ -1,5 +1,6 @@
 import { videoRouter } from "~/server/api/routers/video";
 import { userRouter } from "~/server/api/routers/user";
+import {awsRouter} from "~/server/api/routers/aws";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -10,6 +11,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 export const appRouter = createTRPCRouter({
   video: videoRouter,
   user: userRouter,
+  aws: awsRouter,
 });
 
 // export type definition of API

@@ -28,6 +28,9 @@ export const env = createEnv({
     IAWS_SECRET_ACCESS_KEY: z.string(),
     IAWS_REGION: z.string(),
     IAWS_BUCKET_NAME: z.string(),
+    IAWS_INSTANCE_ID: z.string(),
+    IAWS_EC2_ACCESS_KEY_ID: z.string(),
+    IAWS_EC2_SECRET_ACCESS_KEY: z.string(),
   },
 
   /**
@@ -54,6 +57,9 @@ export const env = createEnv({
     IAWS_SECRET_ACCESS_KEY: process.env.IAWS_SECRET_ACCESS_KEY,
     IAWS_BUCKET_NAME: process.env.IAWS_BUCKET_NAME,
     IAWS_REGION: process.env.IAWS_REGION,
+    IAWS_INSTANCE_ID: process.env.IAWS_INSTANCE_ID,
+    IAWS_EC2_ACCESS_KEY_ID: process.env.IAWS_EC2_ACCESS_KEY_ID,
+    IAWS_EC2_SECRET_ACCESS_KEY: process.env.IAWS_EC2_SECRET_ACCESS_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
