@@ -219,7 +219,12 @@ export default function Home() {
               value={lastFile?.progress ?? 0}
               text={`${lastFile?.progress ?? 0}%`}
             />
-            <button className="rounded-lg bg-verde px-12 py-3 text-2xl font-bold text-white">
+            <button
+              disabled={!lastFile || lastFile?.progress !== 100}
+              onClick={() => {
+                window.location.href = "/dashboard/historial";
+              }}
+            className={twMerge("rounded-lg bg-gray-400 px-12 py-3 text-2xl font-bold text-white", lastFile?.progress === 100 ? "bg-verde" : "")}>
               Descargar
             </button>
           </div>

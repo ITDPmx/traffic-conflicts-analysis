@@ -77,9 +77,16 @@ const HistoryRow = async ({ videoId }: { videoId: string }) => {
       >
         {data?.createdAt.toDateString()}
       </th>
-      <td className="px-6 py-4 underline"><Link href={`/api/aws/video?id=${data?.id}`}>{data?.name ?? "Sin Nombre"}</Link></td>
+      <td className="px-6 py-4 underline"><Link href={`/api/aws/s3?asset=original_video&id=${data?.id}`}>{data?.name ?? "Sin Nombre"}</Link></td>
       <td className="px-6 py-4">{Number(data?.duration) ?? "-1"}</td>
-      <td className="px-6 py-4">{data?.resultLink ?? "En proceso"}</td>
+      <td className="px-6 py-4">{(data?.progress ?? 0) < 100 ? "En proceso." : (
+        <div className="underline">
+          <p><Link target="_blank" href={`/api/aws/s3?asset=processed_video&id=${data?.id}`}>Video Procesado</Link></p>
+          <p><Link target="_blank" href={`/api/aws/s3?asset=summary&id=${data?.id}`}>Resumen</Link></p>
+          <p><Link target="_blank" href={`/api/aws/s3?asset=full_data&id=${data?.id}`}>Todos los datos</Link></p>
+        </div>
+
+      )}</td>
     </tr>
   );
 };
