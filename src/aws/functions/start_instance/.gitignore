@@ -1,0 +1,6 @@
+credentials.json
+token.json
+venv/
+__pycache__/
+dependencies/
+aws_lambda_artifact.zip 
