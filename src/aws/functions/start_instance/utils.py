@@ -3,7 +3,7 @@ import requests
 import concurrent.futures
 from constants import instance_ids, services, DOCKER_UP_STATUS, CONTAINER_STATUS_COMMAND, PORT_STATUS_COMMAND
 from clients import ssm_client, ec2
-
+import threading
 
 def execute_command(command, instance_ids):
     response = ssm_client.send_command(
@@ -70,6 +70,7 @@ def send_post_request(url, data):
 
 def unawaited_request(url, data):
     # Send POST request without waiting for the result
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        executor.submit(send_post_request, url, data)
+    print("unawaited_request data: ", data)
+    thread = threading.Thread(target=send_post_request, args=(url, data))
+    thread.start()
         

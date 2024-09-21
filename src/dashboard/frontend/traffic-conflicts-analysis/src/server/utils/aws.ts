@@ -12,8 +12,6 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import path from "path";
 
-export const BUCKET_VIDEO_DIR = "videos";
-
 // Create an S3 client service object
 const expiration = 3600; // The expiration time of the presigned URL (in seconds)
 const s3Client = new S3Client({
@@ -31,7 +29,7 @@ export const generatePutPresignedUrl = async ({
 }) => {
   const command = new PutObjectCommand({
     Bucket: env.IAWS_BUCKET_NAME,
-    Key: path.join(BUCKET_VIDEO_DIR, fileName),
+    Key: fileName,
   });
 
   try {
@@ -52,7 +50,7 @@ export const generateGetPresignedUrl = async ({
 }) => {
   const command = new GetObjectCommand({
     Bucket: env.IAWS_BUCKET_NAME,
-    Key: path.join(BUCKET_VIDEO_DIR, fileName),
+    Key: fileName,
   });
 
   try {
