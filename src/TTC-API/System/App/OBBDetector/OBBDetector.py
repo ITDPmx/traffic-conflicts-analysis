@@ -41,51 +41,41 @@ class OBBDetector (Borg):
         self.model_obb = YOLO(model_obb_path)
         self.fps = self.video.get(cv2.CAP_PROP_FPS)
         self.frames = int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
-        # self.hmatrix = np.loadtxt("/shared_data/homography_matrix.txt")
-        # self.target_dim = np.loadtxt("/shared_data/target_dim.txt", dtype=int)
-        # self.out = cv2.VideoWriter(bev_path, cv2.VideoWriter_fourcc(*'XVID'), self.fps, self.target_dim)
         self.data = []  # List to store data for DataFrame
         self.model_WHE = WidthHeightModel()
         self.model_WHE.load_state_dict(torch.load(model_WHE_path))
         self.model_WHE.eval()
-        self.clasess_to_track = [4,5,0,7,3,1]
         self.class_mapping = {0: "car", 1: "truck", 2: "van", 3: "bus", 4: "pedestrian", 5: "cyclist", 6: "tricyclist", 7: "motorcyclist"}
         self.labels_map = {0: 4, 1: 5, 2: 0, 3: 7, 5: 3, 7: 1}
-        self.labels_map_coco = {0: "pedestrian", 1: "cyclist", 2: "car", 3: "motorcyclist", 5: "bus", 7: "truck"}        
+        self.labels_map_coco = {0: "pedestrian", 1: "cyclist", 2: "car", 3: "motorcyclist", 5: "bus", 7: "truck"}
         load_dotenv()
         AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY") 
-        self.AWS_BUCKET_NAME = 'tca-tec'
-        AWS_REGION = 'us-east-2'
+        self.AWS_BUCKET_NAME = 'tca-itdp-tec-prod'
+        AWS_REGION = 'us-east-1'
 
         self.S3_CLIENT = boto3.client(
             's3',
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-            region_name=AWS_REGION
-        ) 
+            region_name=AWS_REGION )       
     #-----------------------------------------------------------------------------------------------------------------------------
     def process_video(self):
         frame_ix = 0
         ret, frame = self.video.read()
-        # print(self.target_dim)
-        # frame = cv2.warpPerspective(frame, self.hmatrix, dsize=(self.target_dim[0], self.target_dim[1]), flags=cv2.INTER_CUBIC)
-        # self.out.write(frame)/
         for _ in range(self.frames - 1):
             ret, frame_sig = self.video.read()
             if not ret:
                 continue
 
-            # frame_sig = cv2.warpPerspective(frame_sig, self.hmatrix, dsize=self.target_dim, flags=cv2.INTER_CUBIC)
             act = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             sig = cv2.cvtColor(frame_sig, cv2.COLOR_BGR2GRAY)
-            results_2d = self.model.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False, classes=self.clasess_to_track)
+            results_2d = self.model.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False)
             results_obb = self.model_obb.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False)
             timestamp = self.video.get(cv2.CAP_PROP_POS_MSEC)
             self.process_frame(frame, frame_sig, act, sig, results_2d, results_obb, timestamp, frame_ix)
             frame_ix += 1
             frame = frame_sig.copy()
-            # self.out.write(frame)
             if frame_ix % (self.frames/50) == 0: #each 2% progress
                 response = requests.post('https://tca.mexico.itdp.org/api/progress', json={"id": self.id_video, "progress": (frame_ix/self.frames)*90 })
         

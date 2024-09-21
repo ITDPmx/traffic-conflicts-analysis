@@ -8,11 +8,6 @@ import requests
 #Generic director
 from Generic.Director.GenericProjectDirector import GenericProjectDirector
 
-#AWS
-import boto3
-from botocore.exceptions import NoCredentialsError
-from dotenv import load_dotenv
-
 #Local imports
 from System.App.OBBDetector.OBBDetector import OBBDetector
 from System.App.OBBVisualization.OBBVisualization import OBBVisualization
@@ -38,18 +33,6 @@ class ProjectDirector( GenericProjectDirector ):
                 }
             )
 
-        load_dotenv()
-        AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-        AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY") 
-        AWS_BUCKET_NAME = 'homography-matrices'
-        AWS_REGION = 'us-east-2'
-
-        self.S3_CLIENT = boto3.client(
-            's3',
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-            region_name=AWS_REGION
-        ) 
         
     #-----------------------------------------------------------------------------------------------------------------------------
     def __play( self, what, id_video ):
@@ -64,15 +47,8 @@ class ProjectDirector( GenericProjectDirector ):
 
         prevtime = time.time()
 
-        # Get video from bucket
-        # os.makedirs('videos', exist_ok=True)
-        # new_path = "videos/test"
-        # self.S3_CLIENT.download_file(bucket, path, new_path)
-        
         # obb detector 
         video_path = '/shared_data/bev_' + id_video + '.mp4'
-        # video_path = 'videos/181653_cam3_bev.mp4'
-        # bev_path = "/shared_data/bev_" + id_video + ".mp4"
         model_path = "weights/yolov9e-seg.pt"
         model_obb_path = "weights/yolo_obb.pt"
         model_WHE_path = 'weights/best_width_height_estimator.pth'
@@ -106,11 +82,11 @@ class ProjectDirector( GenericProjectDirector ):
         # output_path = 'processed_videos/video' + id_video + '.mp4'
         obbvis = OBBVisualization(video_path, output_path, df)
         obbvis.process_video()
-        bucket_path = 'processed_videos/video' + id_video + '.mp4'
+        bucket_path = 'processed_videos/' + id_video + '.mp4'
         obb_processor.uploadFile(output_path, bucket_path)
         response = requests.post('https://tca.mexico.itdp.org/api/progress', json={"id": id_video, "progress": 95 })
 
-        """
+        # """
         #Step 04: Calling TTC Estimator
 
         colProc = CollisionDataProcessor(df)
@@ -120,13 +96,17 @@ class ProjectDirector( GenericProjectDirector ):
         colProc.calculate_severity()
         colProc.filter_data()
         colProc.aggregate_data()
-        colProc.save_to_csv()
-        col_file = 'reports/collision_data' + id_video + '.csv'
-        summary_file = 'reports/collision_data_summary' + id_video + '.csv'
-        obb_processesor.uploadFile(col_file, 'csvs/collision_data.csv')
-        obb_processesor.uploadFile(summary_file, 'csvs/collision_data_summary.csv')
+
+        col_file = '/shared_data/collision_data' + id_video + '.csv'
+        summary_file = '/shared_data/collision_data_summary' + id_video + '.csv'
+        
+        colProc.save_to_csv(col_file, summary_file)
+        col_bucket_path = 'csvs/' + id_video + '.csv'
+        summary_bucket_path = 'csvs/summary' + id_video + '.csv'
+        obb_processor.uploadFile(col_file, col_bucket_path)
+        obb_processor.uploadFile(summary_file, summary_bucket_path)
         response = requests.post('https://tca.mexico.itdp.org/api/progress', json={"id": id_video, "progress": 100 })
-        """
+        # """
         self.ctx['__obj']['__log'].setLog('Finished')
         #Bye
         return None

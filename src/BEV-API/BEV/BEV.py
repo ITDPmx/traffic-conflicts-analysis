@@ -384,13 +384,13 @@ class BEV:
         """
 
         os.makedirs('videos', exist_ok=True)
-        new_path = '/shared_data/video' + id_video + '.mp4'
+        new_path = '/shared_data/video_' + id_video + '.mp4'
         cls.S3_CLIENT.download_file(bucket, path, new_path)
         print("Video downloaded successfully")
 
         video = cv2.VideoCapture(new_path)
         ret, frame = video.read()
-        return frame 
+        return frame, new_path 
     
     @classmethod
     def getMatrix(cls, bucket, path):
@@ -540,7 +540,7 @@ class BEV:
         # Define the codec and create VideoWriter object for the output video
         # output_path = 'output_video.mp4'
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Codec for mp4 files
-        out = cv2.VideoWriter(output_path, fourcc, fps, (target_dim[0], target_dim[1]))
+        out = cv2.VideoWriter(output_path, fourcc, fps, target_dim)
         # out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
 
         # Loop through all the frames
@@ -550,8 +550,7 @@ class BEV:
                 break  # Break the loop if no frame is returned (end of video)
 
             # Optionally, you can process the frame here (e.g., apply filters, transformations, etc.)
-            frame = cv2.warpPerspective(frame, matrix, dsize=target_dim, flags=cv2.INTER_CUBIC)
-            cv2.imwrite('/shared_data/frame.jpg', frame)
+            frame = cv2.warpPerspective(frame, matrix, dsize= target_dim, flags=cv2.INTER_CUBIC)
             # Write the frame to the output video
             out.write(frame)
 
@@ -598,7 +597,7 @@ class BEV:
                 slim.get_variables_to_restore())
  
             # Configure GPU memory usage
-            gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=5 / 16)  # Assuming 16GB total GPU memory
+            gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=10 / 16)  # Assuming 16GB total GPU memory
             config = tf.ConfigProto(gpu_options=gpu_options)
  
             with tf.Session(config=config) as sess:
@@ -643,10 +642,6 @@ class BEV:
                                                                                                    orig_height),
                                                                                          verbose=False)
         scaled_overhead_hmatrix, target_dim = get_scaled_homography(overhead_hmatrix, 1080 * 2, est_range_u, est_range_v)
-        
-        video_path = '/shared_data/video' + id_video + '.mp4'
-        output_path = '/shared_data/bev_' + id_video + '.mp4'
-        cls.save_bev_video(video_path, output_path, scaled_overhead_hmatrix, target_dim)
         # print("target dim: ", target_dim)
         # os.makedirs("BEV/output/", exist_ok=True)
         # txt_file = 'BEV/output/' + img_path[img_path.rfind('/') + 1:img_path.rfind(
@@ -674,4 +669,5 @@ class BEV:
  
         # Force garbage collection
         gc.collect()
-        print("Memory releaseddddd")
+        print("Memory released")
+        return scaled_overhead_hmatrix, target_dim
