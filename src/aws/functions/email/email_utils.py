@@ -12,13 +12,15 @@ html_template = """
 <html>
   <body>
     <h1 style="color:blue;">¡Tus resultados están listos!</h1>
-    <p>Accede a tus <a href="{link}">resultados</a>.</p>
+    <p>Hola {user_name},</p> 
+    <p>Los resultados de tu video "{video_name}" subido el {date_str} se terminaron de procesar.</p>
+    <p>Da clic <a href="{link}">aquí</a> para acceder a tus resultados.</p>
   </body>
 </html>
 """
 
 
-def send_email_with_oauth2(to_email, subject, link):
+def send_email_with_oauth2(to_email, subject, link, user_name, video_name, date_str):
     creds = None
     # token.json saves credentials after the first login
     if os.path.exists('token.json'):
@@ -44,7 +46,8 @@ def send_email_with_oauth2(to_email, subject, link):
 
     service = build('gmail', 'v1', credentials=creds)
 
-    message = MIMEText(html_template.format(link=link), 'html')
+    message = MIMEText(html_template.format(link=link, user_name=user_name, video_name=video_name, date_str=date_str), 'html')
+
     message['to'] = to_email
     message['subject'] = subject
     raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
