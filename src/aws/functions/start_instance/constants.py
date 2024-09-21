@@ -1,5 +1,5 @@
 region = 'us-east-1'
-DOCKER_COMPOSE_COMMAND = "docker compose --file  traffic-conflicts-analysis/src/docker-compose.yml up --build --detach"
+DOCKER_COMPOSE_COMMAND = "docker compose --file  /home/vision/traffic-conflicts-analysis/src/docker-compose.yml up --build --detach"
 
 instance_ids = ["i-02a33facac910baba"]
 
