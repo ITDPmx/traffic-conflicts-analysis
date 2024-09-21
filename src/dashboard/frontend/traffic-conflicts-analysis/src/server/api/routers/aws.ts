@@ -18,14 +18,14 @@ const ec2 = new EC2({
 });
 
 export const awsRouter = createTRPCRouter({
-  isInstanceOn: protectedProcedure
+  isInstanceStopped: protectedProcedure
   .query(async () => {
 
-    return await isInstanceOn();
+    return await isInstanceStopped();
   }),
 });
 
-async function isInstanceOn() {
+async function isInstanceStopped() {
     try {
         // Describe instance status
         const data = await ec2.describeInstanceStatus({
@@ -39,7 +39,7 @@ async function isInstanceOn() {
         } else {
             const state = data?.InstanceStatuses ? data?.InstanceStatuses[0]?.InstanceState?.Name : "undefined";
             console.log(`Instance ${env.IAWS_INSTANCE_ID} is ${state}.`);
-            return state === "running";
+            return state === "stopped";
         }
     } catch (error) {
         console.error(`Error checking instance status: ${JSON.stringify(error)}`);

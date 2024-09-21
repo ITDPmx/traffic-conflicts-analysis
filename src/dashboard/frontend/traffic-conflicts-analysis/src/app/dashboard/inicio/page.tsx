@@ -18,7 +18,7 @@ export default function Home() {
 
   const { data: lastFile } = api.video.getLastVideo.useQuery();
 
-  const { data: isInstanceOn, isLoading } = api.aws.isInstanceOn.useQuery();
+  const { data: isInstanceStopped, isLoading } = api.aws.isInstanceStopped.useQuery();
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -110,7 +110,7 @@ export default function Home() {
                 </p>
               )}
 
-            {!isLoading && isInstanceOn &&
+            {!isLoading && !isInstanceStopped &&
                 (<h3 className="text-center text-red-500 text-lg">
                   Atención: el servidor de análisis se encuentra ocupado. Regresa más tarde para subir tu video.
                 </h3>
@@ -121,7 +121,7 @@ export default function Home() {
                 <label
                   className={twMerge(
                     "custom-file-upload border-r-2 border-black bg-gray-400  p-3 text-center text-2xl font-bold text-white",
-                    !isInstanceOn ? "bg-verde" : "",
+                    isInstanceStopped ? "bg-verde" : "",
                   )}
                 >
                   <input
@@ -129,7 +129,7 @@ export default function Home() {
                     className="hidden"
                     onChange={handleFileUpload}
                     accept="video/*"
-                    disabled={isInstanceOn}
+                    disabled={isLoading || !isInstanceStopped}
                   />
                   Escoger archivo
                 </label>
@@ -139,10 +139,10 @@ export default function Home() {
               </div>
 
               <button
-                disabled={!isInstanceOn}
+                disabled={isLoading || !isInstanceStopped}
                 className={twMerge(
                   "rounded-lg bg-gray-400  px-12 py-3 text-2xl font-bold text-white",
-                  !isInstanceOn ? "bg-verde" : "",
+                  isInstanceStopped ? "bg-verde" : "",
                 )}
                 onClick={async () => {
                   if (
