@@ -1,38 +1,47 @@
 import os
-from pydantic import BaseModel
 from email_utils import send_email_with_oauth2
 import requests
 import urllib
-
-class Email(BaseModel):
-    destination: str
-    subject: str
-    link: str
-    user_name: str
-    video_name: str
-    date_str: str
     
 
 DATA_ENDPOINT = "https://tca.mexico.itdp.org/api/email_data"
 REDIRECT_ENDPOINT = "https://tca.mexico.itdp.org/dashboard/historial"
 
-def send_email(emailData: Email):
-    return {"Result": send_email_with_oauth2(emailData.destination, emailData.subject, emailData.link, emailData.user_name, emailData.video_name, emailData.date_str)}
+def send_email(destination: str, subject: str, link: str, user_name: str, video_name: str, date_str: str):
+    return {"Result": send_email_with_oauth2(destination, subject, link, user_name, video_name, date_str)}
 
 
 def get_email_data(video_id: str):
     data = requests.get(f"{DATA_ENDPOINT}/{video_id}").json()["data"]["emailInfo"]
-    return Email(destination=data["user"]["email"], subject="Tu video ha sido procesado!", 
-                 link=REDIRECT_ENDPOINT, user_name=data["user"]["name"],\
-                 date_str=data["createdAt"], video_name=data["name"])
+    return {
+        "destination": data["user"]["email"],
+        "subject": "Tu video ha sido procesado!",
+        "link": REDIRECT_ENDPOINT,
+        "user_name": data["user"]["name"],
+        "date_str": data["createdAt"],
+        "video_name": data["name"]
+    }
 
 def lambda_handler(event, context):
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
     video_id = os.path.splitext(key.split("/")[-1])[0]
+    # Remove summary prefix
+    video_id = video_id[7:]
+    print(f"Processing video with id: {video_id}")
+    email_data = get_email_data(video_id)
     
+    print("email_data: ", email_data)
+    send_email(
+        destination=email_data["destination"],
+        subject=email_data["subject"],
+        link=email_data["link"],
+        user_name=email_data["user_name"],
+        video_name=email_data["video_name"],
+        date_str=email_data["date_str"]
+    )
     return {
         'statusCode': 200,
-        'body': send_email(get_email_data(video_id))
+        'body': 'Email sent successfully'
     }
 
 if __name__ == '__main__':
