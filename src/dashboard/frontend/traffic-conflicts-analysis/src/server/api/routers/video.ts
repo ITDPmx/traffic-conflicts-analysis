@@ -26,6 +26,9 @@ export const videoRouter = createTRPCRouter({
       select: {
         id: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   }),
   getUserVideosById: protectedProcedure
@@ -92,6 +95,25 @@ export const videoRouter = createTRPCRouter({
         orderBy: {
           createdAt: "desc",
         },
+      });
+    }),
+    getEmailDataByVideoId: adminProcedure
+    .input(z.object({ videoId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.video.findUnique({
+        where: {
+          id: input.videoId,
+        },
+        select: {
+          user: {
+            select: {
+              email: true,
+              name: true,
+            },
+          },
+          name: true,
+          createdAt: true,
+        }
       });
     }),
 });
