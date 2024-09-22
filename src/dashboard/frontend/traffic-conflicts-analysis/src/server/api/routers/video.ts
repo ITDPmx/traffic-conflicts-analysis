@@ -57,8 +57,7 @@ export const videoRouter = createTRPCRouter({
       });
 
       const extension = input.name.split(".").at(-1);
-
-      const finalName = `${video.id}.${extension}`;
+      const finalName = `videos/${video.id}.${extension}`;
 
       return await generatePutPresignedUrl({ fileName: finalName });
     }),
