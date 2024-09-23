@@ -11,8 +11,8 @@ export default async function Users() {
   return (
     <div className="mx-auto flex w-full items-center">
       <div className="relative mx-auto mt-10 overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-          <thead className="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        <table className="w-full text-left text-sm text-gray-500 rtl:text-right ">
+          <thead className="bg-gray-50 text-xs uppercase text-gray-700  ">
             <tr>
               <th
                 scope="col"
@@ -53,7 +53,7 @@ export default async function Users() {
           </tbody>
         </table>
         {userIds?.length === 0 && (
-          <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+          <div className="p-4 text-center text-gray-500 ">
             No hay usuarios
           </div>
         )}

@@ -14,25 +14,31 @@ export default async function Home() {
 
   return (
     <>
-      <div className="hidden md:block">
+      <div>
         <main className="flex h-screen w-screen flex-row">
-          <div className="flex w-1/2 flex-row px-10">
-            <div className="mt-44 flex flex-col gap-y-2">
-              <h1 className="border-b-4 border-solid border-verde font-fira-sans pb-6 text-7xl font-bold text-gris">
+          <div className="flex w-full flex-row px-10 lg:w-1/2">
+            <div className="mt-10 flex flex-col gap-y-2 lg:mt-44">
+              <h1 className="border-b-4 border-solid border-verde pb-6 font-fira-sans text-2xl font-bold text-gris lg:text-7xl">
                 Identificador de conflictos viales
               </h1>
-              <p className="pt-4 text-lg font-medium text-gray-600">
+              <p className="pt-4 font-medium text-gray-600 lg:text-lg">
                 Herramienta gratuita para identificar conflictos viales mediante
                 el análisis de videos capturados por cámaras instaladas en
                 intersecciones viales.
               </p>
-              <p className="pt-4 text-lg font-medium text-gray-600">
-                Basado en el <span className="underline">Manual de observación de conflictos viales para la
-                prevención de siniestros de tránsito en ciudades de América
-                Latina (ITDP, 2024).</span>
+              <p className="pt-4 font-medium text-gray-600 lg:text-lg">
+                Basado en el{" "}
+                <span className="underline">
+                  Manual de observación de conflictos viales para la prevención
+                  de siniestros de tránsito en ciudades de América Latina (ITDP,
+                  2024).
+                </span>
               </p>
+              <div className="lg:hidden flex h-full justify-center mt-6 bg-gray-100 items-center">
+                <GoogleButton className="" providers={providers} />
+              </div>
               <div className="mb-10 mt-auto">
-                <p className="mt-12 text-lg font-medium text-gray-600">
+                <p className="mt-12 font-medium text-gray-600 lg:text-lg">
                   Una colaboración de:
                 </p>
                 <div className="mt-4 flex space-x-4">
@@ -54,14 +60,21 @@ export default async function Home() {
                 </div>
                 <p className="mt-12 text-center text-sm text-gray-600">
                   Si tienes alguna duda o comentario, no dudes en contactarnos a
-                  través de este <a className="underline" href="mailto:berenice.perez@itdp.org">mail</a>.
+                  través de este{" "}
+                  <a
+                    className="underline"
+                    href="mailto:berenice.perez@itdp.org"
+                  >
+                    mail
+                  </a>
+                  .
                 </p>
               </div>
             </div>
           </div>
 
           <div
-            className="w-1/2 bg-black bg-cover bg-center border-l-[20px] border-verde"
+            className="hidden w-1/2 border-l-[20px] border-verde bg-black bg-cover bg-center lg:block"
             style={{ backgroundImage: `url('/Portada.png')` }}
           >
             <div className="flex h-full justify-center">
