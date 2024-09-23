@@ -4,7 +4,6 @@ import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-  memberProcedure,
   adminProcedure,
 } from "~/server/api/trpc";
 
@@ -41,13 +40,14 @@ export const videoRouter = createTRPCRouter({
       });
     }),
   getSignedUrl: protectedProcedure
-    .input(z.object({ name: z.string(), duration: z.number() }))
+    .input(z.object({ name: z.string(), duration: z.number(), defaultMatrix: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       const video = await ctx.db.video.create({
         data: {
           name: input.name,
           progress: 0,
           duration: input.duration,
+          defaultMatrix: input.defaultMatrix,
           user: {
             connect: {
               id: ctx.session.user.id,
@@ -83,6 +83,21 @@ export const videoRouter = createTRPCRouter({
           id: input.videoId,
         },
       });
+    }),
+
+  videoUsesDefaultMatrix: publicProcedure
+    .input(z.object({ videoId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const data = await ctx.db.video.findUnique({
+        where: {
+          id: input.videoId,
+        },
+        select: {
+          defaultMatrix: true,
+        },
+      });
+
+      return data?.defaultMatrix ?? false;
     }),
 
     getLastVideo: protectedProcedure

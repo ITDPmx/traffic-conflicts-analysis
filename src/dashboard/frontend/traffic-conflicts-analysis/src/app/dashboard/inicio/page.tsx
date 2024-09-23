@@ -6,6 +6,7 @@ import { api } from "~/trpc/react";
 import "react-circular-progressbar/dist/styles.css";
 import BeatLoader from "react-spinners/BeatLoader";
 import { twMerge } from "tailwind-merge";
+import { ToolTip } from "~/app/_components/tooltip";
 
 import axios from "axios";
 import Link from "next/link";
@@ -13,12 +14,15 @@ import Link from "next/link";
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [useDefaultMatrix, setUseDefaultMatrix] = useState(false);
+
   const [duration, setDuration] = useState(-1);
   const [progress, setProgress] = useState(0);
 
   const { data: lastFile } = api.video.getLastVideo.useQuery();
 
-  const { data: isInstanceStopped, isLoading } = api.aws.isInstanceStopped.useQuery();
+  const { data: isInstanceStopped, isLoading } =
+    api.aws.isInstanceStopped.useQuery();
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -81,7 +85,7 @@ export default function Home() {
       <div className="h-[2vh]">
         <p className="text-white">a</p>
       </div>
-      <div className="flex flex-col md:flex-row gap-y-5">
+      <div className="flex flex-col gap-y-5 md:flex-row">
         <div className="box-border w-full md:w-[70%]">
           <div className="flex flex-col gap-y-8">
             <div className="flex flex-row justify-center">
@@ -110,17 +114,18 @@ export default function Home() {
                 </p>
               )}
 
-            {!isLoading && !isInstanceStopped &&
-                (<h3 className="text-center text-red-500 text-lg">
-                  Atención: el servidor de análisis se encuentra ocupado. Regresa más tarde para subir tu video.
-                </h3>
-              )}
+            {!isLoading && !isInstanceStopped && (
+              <h3 className="text-center text-lg text-red-500">
+                Atención: el servidor de análisis se encuentra ocupado. Regresa
+                más tarde para subir tu video.
+              </h3>
+            )}
 
             <div className="flex flex-row flex-wrap justify-around gap-y-4">
               <div className="ml-4 flex flex-row rounded-md border-2 border-black">
                 <label
                   className={twMerge(
-                    "custom-file-upload border-r-2 border-black bg-gray-400 p-2 md:p-3 text-center text-sm md:text-2xl font-bold text-white",
+                    "custom-file-upload border-r-2 border-black bg-gray-400 p-2 text-center text-sm font-bold text-white md:p-3 md:text-2xl",
                     isInstanceStopped ? "bg-verde" : "",
                   )}
                 >
@@ -133,15 +138,35 @@ export default function Home() {
                   />
                   Escoger archivo
                 </label>
-                <p className="mx-5 my-auto p-2 md:p-3 text-center text-sm md:text-2xl font-bold text-verde">
+                <p className="mx-5 my-auto p-2 text-center text-sm font-bold text-verde md:p-3 md:text-2xl">
                   {selectedFile ? selectedFile.name : "No File"}
                 </p>
               </div>
+              <label className="inline-flex cursor-pointer items-center">
+                <input
+                  type="checkbox"
+                  checked={useDefaultMatrix}
+                  onChange={(value) => {
+                    setUseDefaultMatrix(value.target.checked);
+                  }}
+                  className="peer sr-only bg-verde text-verde"
+                />
+                <div
+                  className={twMerge(
+                    "peer relative h-6 w-11 rounded-full bg-gray-400 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-verde peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full ",
+                  )}
+                ></div>
+                <p className="ml-3  text-sm md:text-2xl">Usar matriz default</p>
+                <ToolTip
+                  className="ml-4"
+                  text="La matriz default es una matriz de intersección vial predefinida que se utilizará en el análisis."
+                />
+              </label>
 
               <button
                 disabled={isLoading || !isInstanceStopped}
                 className={twMerge(
-                  "rounded-lg bg-gray-400  px-12 py-3 p-2 md:p-3 text-center text-sm md:text-2xl font-bold text-white",
+                  "rounded-lg bg-gray-400  p-2 px-12 py-3 text-center text-sm font-bold text-white md:p-3 md:text-2xl",
                   isInstanceStopped ? "bg-verde" : "",
                 )}
                 onClick={async () => {
@@ -152,6 +177,7 @@ export default function Home() {
                     getSignedUrl.mutate({
                       name: selectedFile.name,
                       duration: duration,
+                      defaultMatrix: useDefaultMatrix,
                     });
                   }
                 }}
@@ -183,7 +209,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="box-border w-full md:w-[30%] justify-center">
+        <div className="box-border w-full justify-center md:w-[30%]">
           <div className="flex flex-row justify-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full border-4  border-verde p-7 text-3xl font-bold text-gris">
               2
@@ -203,7 +229,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="justify-b mx-4 md:ml-0 md:mr-[10%] flex flex-col items-center justify-around gap-y-4 rounded-3xl py-12 shadow-full-border">
+          <div className="justify-b mx-4 flex flex-col items-center justify-around gap-y-4 rounded-3xl py-12 shadow-full-border md:ml-0 md:mr-[10%]">
             <h2 className="text-3xl font-bold text-verde">Resultados</h2>
             {lastFile && (
               <h2 className="mb-8 text-lg font-bold">({lastFile.name})</h2>
@@ -224,16 +250,20 @@ export default function Home() {
               onClick={() => {
                 window.location.href = "/dashboard/historial";
               }}
-            className={twMerge("rounded-lg bg-gray-400 px-12 py-3 text-2xl font-bold text-white", lastFile?.progress === 100 ? "bg-verde" : "")}>
+              className={twMerge(
+                "rounded-lg bg-gray-400 px-12 py-3 text-2xl font-bold text-white",
+                lastFile?.progress === 100 ? "bg-verde" : "",
+              )}
+            >
               Descargar
             </button>
           </div>
         </div>
       </div>
 
-      <div className="mt-5 md:mt-0  md:ml-[5%] flex md:flex-row flex-col flex-wrap items-center">
+      <div className="mt-5 flex  flex-col flex-wrap items-center md:ml-[5%] md:mt-0 md:flex-row">
         <p className="text-center text-gris">Una colaboración de:</p>
-        <div className="md:ml-7 mb-6 md:mb-0 mt-4 flex md:flex-row flex-col flex-wrap items-center space-x-4 gap-y-5 md:gap-y-0">
+        <div className="mb-6 mt-4 flex flex-col flex-wrap items-center gap-y-5 space-x-4 md:mb-0 md:ml-7 md:flex-row md:gap-y-0">
           <img
             src="/ITDP_logo_completo.png"
             alt="ITDP Logo"
