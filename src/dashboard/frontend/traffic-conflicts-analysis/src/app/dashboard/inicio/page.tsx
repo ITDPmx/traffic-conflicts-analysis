@@ -81,10 +81,10 @@ export default function Home() {
       <div className="h-[2vh]">
         <p className="text-white">a</p>
       </div>
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col md:flex-row gap-y-5">
         <div className="box-border w-full md:w-[70%]">
           <div className="flex flex-col gap-y-8">
-            <div className="flex flex-row  justify-center">
+            <div className="flex flex-row justify-center">
               <div className="flex h-16 w-16 items-center justify-center rounded-full border-4  border-verde p-7 text-3xl font-bold text-gris">
                 1
               </div>
@@ -120,7 +120,7 @@ export default function Home() {
               <div className="ml-4 flex flex-row rounded-md border-2 border-black">
                 <label
                   className={twMerge(
-                    "custom-file-upload border-r-2 border-black bg-gray-400  p-3 text-center text-2xl font-bold text-white",
+                    "custom-file-upload border-r-2 border-black bg-gray-400 p-2 md:p-3 text-center text-sm md:text-2xl font-bold text-white",
                     isInstanceStopped ? "bg-verde" : "",
                   )}
                 >
@@ -133,7 +133,7 @@ export default function Home() {
                   />
                   Escoger archivo
                 </label>
-                <p className="mx-5 my-auto text-center text-2xl font-bold text-verde">
+                <p className="mx-5 my-auto p-2 md:p-3 text-center text-sm md:text-2xl font-bold text-verde">
                   {selectedFile ? selectedFile.name : "No File"}
                 </p>
               </div>
@@ -141,7 +141,7 @@ export default function Home() {
               <button
                 disabled={isLoading || !isInstanceStopped}
                 className={twMerge(
-                  "rounded-lg bg-gray-400  px-12 py-3 text-2xl font-bold text-white",
+                  "rounded-lg bg-gray-400  px-12 py-3 p-2 md:p-3 text-center text-sm md:text-2xl font-bold text-white",
                   isInstanceStopped ? "bg-verde" : "",
                 )}
                 onClick={async () => {
@@ -183,8 +183,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="box-border w-full md:w-[30%]">
-          <div className="flex flex-row">
+        <div className="box-border w-full md:w-[30%] justify-center">
+          <div className="flex flex-row justify-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full border-4  border-verde p-7 text-3xl font-bold text-gris">
               2
             </div>
@@ -203,7 +203,7 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <div className="justify-b mr-[10%] flex flex-col items-center justify-around gap-y-4 rounded-3xl py-12 shadow-full-border">
+          <div className="justify-b mx-4 md:ml-0 md:mr-[10%] flex flex-col items-center justify-around gap-y-4 rounded-3xl py-12 shadow-full-border">
             <h2 className="text-3xl font-bold text-verde">Resultados</h2>
             {lastFile && (
               <h2 className="mb-8 text-lg font-bold">({lastFile.name})</h2>
@@ -231,9 +231,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="ml-[5%] flex flex-row items-center">
+      <div className="mt-5 md:mt-0  md:ml-[5%] flex md:flex-row flex-col flex-wrap items-center">
         <p className="text-center text-gris">Una colaboración de:</p>
-        <div className="ml-7 mt-4 flex flex-row flex-wrap items-center space-x-4">
+        <div className="md:ml-7 mb-6 md:mb-0 mt-4 flex md:flex-row flex-col flex-wrap items-center space-x-4 gap-y-5 md:gap-y-0">
           <img
             src="/ITDP_logo_completo.png"
             alt="ITDP Logo"

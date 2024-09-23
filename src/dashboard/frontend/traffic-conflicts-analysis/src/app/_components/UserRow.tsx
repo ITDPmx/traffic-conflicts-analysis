@@ -21,10 +21,10 @@ export const UserRow = ({ userId, callerUserId }: { userId: string, callerUserId
     );
   
     return (
-      <tr className="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800">
+      <tr className="border-b odd:bg-white even:bg-gray-50">
         <th
           scope="row"
-          className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+          className="whitespace-nowrap px-6 py-4 font-medium text-gray-900 "
         >
           {userData?.registered.toDateString() ?? "Sin fecha"}
         </th>
@@ -36,7 +36,7 @@ export const UserRow = ({ userId, callerUserId }: { userId: string, callerUserId
               }
             }
             className="peer sr-only text-verde bg-verde" disabled={userId === callerUserId} />
-            <div className={twMerge("peer relative h-6 w-11 rounded-full bg-gray-400 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-verde peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800",
+            <div className={twMerge("peer relative h-6 w-11 rounded-full bg-gray-400 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-verde peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full ",
                userId === callerUserId ? "bg-gray-100" : "")}></div>
           </label>
         </td>

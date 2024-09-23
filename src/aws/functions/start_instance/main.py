@@ -40,6 +40,7 @@ def lambda_handler(event, context):
         
     print("Services in EC2 are running")
 
+    time.sleep(10)
     
     url = f"http://{ec2_ip}:8000/birdsEyeView"
     body = {

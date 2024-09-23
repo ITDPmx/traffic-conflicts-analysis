@@ -33,7 +33,7 @@ export const Navbar = ({ role }: { role?: string }) => {
 
   return (
     <nav className="fixed left-0 top-0 z-10 w-full border-b-4 border-b-verde bg-white">
-      <div className="container mx-auto flex h-[10vh] items-center justify-between">
+      <div className="pl-4 container mx-auto flex h-[10vh] items-center justify-between">
         <div className="md:text-xl font-bold text-verde  lg:text-2xl">
           Identificador de conflictos viales
         </div>
@@ -49,19 +49,19 @@ export const Navbar = ({ role }: { role?: string }) => {
             </Link>
           ))}
         </div>
-        <div className="md:hidden">
+        <div className="md:hidden pr-4">
           <button onClick={handleToggle} className="text-black">
             {isOpen ? <TfiClose size={24} /> : <FiMenu size={24} />}
           </button>
         </div>
       </div>
       {isOpen && (
-        <div className="pt-4 md:hidden">
+        <div className="pl-4 pt-4 md:hidden">
           {filterMenuItems.map((item) => (
             <Link
               key={item.name}
               href={item.path}
-              className={`my-2 block border-verde p-2 text-2xl text-white duration-200 hover:border-l-4 ${location === item.path ? "border-l-4" : ""}`}
+              className={`my-2 block border-verde p-2 text-gray-500 duration-200 hover:border-l-4 text-sm ${location === item.path ? "border-l-4" : ""}`}
               onClick={() => setIsOpen(false)}
             >
               {item.name}
