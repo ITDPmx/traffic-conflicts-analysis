@@ -13,6 +13,10 @@ import Link from "next/link";
 
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const sizeMB = selectedFile?.size ? selectedFile.size / 1024 / 1024 : 0;
+  const SIZE_LIMIT_MB = 300;
+
   const [isUploading, setIsUploading] = useState(false);
   const [useDefaultMatrix, setUseDefaultMatrix] = useState(false);
 
@@ -100,8 +104,25 @@ export default function Home() {
                 </p>
                 <p>
                   Consulta el{" "}
-                  <span className="underline">manual de usuario</span> o
-                  descarga un <span className="underline">video de prueba</span>
+                  <span className="underline">
+                    <Link
+                      href={
+                        "https://github.com/CentroFuturoCiudades/traffic-conflicts-analysis/main/docs/ManualDeUsuario.pdf"
+                      }
+                    >
+                      manual de usuario
+                    </Link>
+                  </span>{" "}
+                  o descarga un{" "}
+                  <span className="underline">
+                    <Link
+                      href={
+                        "https://raw.githubusercontent.com/CentroFuturoCiudades/traffic-conflicts-analysis/main/docs/181653_cam3.mp4"
+                      }
+                    >
+                      video de prueba
+                    </Link>
+                  </span>
                   .
                 </p>
               </div>
@@ -113,6 +134,12 @@ export default function Home() {
                   soportadas: {supportedExtensions.join(", ")}
                 </p>
               )}
+            {selectedFile && sizeMB > SIZE_LIMIT_MB && (
+              <p className="text-center text-red-500">
+                Atención: el archivo subido no es válido. El archivo tiene que
+                pesar menos de 300 MB.
+              </p>
+            )}
 
             {!isLoading && !isInstanceStopped && (
               <h3 className="text-center text-lg text-red-500">
@@ -164,15 +191,21 @@ export default function Home() {
               </label>
 
               <button
-                disabled={isLoading || !isInstanceStopped}
+                disabled={
+                  isLoading || !isInstanceStopped || sizeMB > SIZE_LIMIT_MB
+                }
                 className={twMerge(
                   "rounded-lg bg-gray-400  p-2 px-12 py-3 text-center text-sm font-bold text-white md:p-3 md:text-2xl",
-                  isInstanceStopped ? "bg-verde" : "",
+                  isInstanceStopped && (sizeMB <= SIZE_LIMIT_MB)? "bg-verde" : "",
                 )}
                 onClick={async () => {
                   if (
                     selectedFile &&
-                    isExtensionSupported(selectedFile.name, supportedExtensions)
+                    isExtensionSupported(
+                      selectedFile.name,
+                      supportedExtensions,
+                    ) &&
+                    sizeMB <= SIZE_LIMIT_MB
                   ) {
                     getSignedUrl.mutate({
                       name: selectedFile.name,

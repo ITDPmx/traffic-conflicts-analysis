@@ -29,6 +29,9 @@ def lambda_handler(event, context):
         
     print("EC2 IP obtained: " + ec2_ip)
     
+    # Delay before running docker compose command
+    time.sleep(10)
+    
     # Run docker compose command
     res = execute_command(DOCKER_COMPOSE_COMMAND, instance_ids)
     
@@ -48,9 +51,9 @@ def lambda_handler(event, context):
     use_default_matrix = response.json()["data"]["usesDefaultMatrix"]
     
     if use_default_matrix:
-        url = BEV_URL.format(ec2_ip=ec2_ip)
-    else:
         url = BEV_URL_DEFAULT.format(ec2_ip=ec2_ip)
+    else:
+        url = BEV_URL.format(ec2_ip=ec2_ip)
         
     print("URL used: " + url)
     
