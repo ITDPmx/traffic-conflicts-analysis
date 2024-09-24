@@ -107,7 +107,7 @@ export default function Home() {
                   <span className="underline">
                     <Link
                       href={
-                        "https://github.com/CentroFuturoCiudades/traffic-conflicts-analysis/main/docs/ManualDeUsuario.pdf"
+                        "https://raw.githubusercontent.com/CentroFuturoCiudades/traffic-conflicts-analysis/main/docs/ManualDeUsuario.pdf"
                       }
                     >
                       manual de usuario
