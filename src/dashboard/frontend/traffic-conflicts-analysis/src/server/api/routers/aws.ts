@@ -34,11 +34,11 @@ async function isInstanceStopped() {
         });
 
         if (data?.InstanceStatuses?.length === 0) {
-            console.log(`Instance ${env.IAWS_INSTANCE_ID} is stopped or does not exist.`);
+            // console.log(`Instance ${env.IAWS_INSTANCE_ID} is stopped or does not exist.`);
             return false
         } else {
             const state = data?.InstanceStatuses ? data?.InstanceStatuses[0]?.InstanceState?.Name : "undefined";
-            console.log(`Instance ${env.IAWS_INSTANCE_ID} is ${state}.`);
+            // console.log(`Instance ${env.IAWS_INSTANCE_ID} is ${state}.`);
             return state === "stopped";
         }
     } catch (error) {
