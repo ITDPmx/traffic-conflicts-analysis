@@ -5,7 +5,7 @@ import requests
 import urllib
 
 from utils import execute_command, get_ip, services_up, unawaited_request
-from constants import instance_ids, DOCKER_COMPOSE_COMMAND
+from constants import instance_ids, DOCKER_COMPOSE_COMMAND, DEFAULT_MATRIX_URL, BEV_URL, BEV_URL_DEFAULT
 from clients import ec2
 
 def lambda_handler(event, context):
@@ -19,6 +19,7 @@ def lambda_handler(event, context):
        
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+    video_id = os.path.splitext(key.split("/")[-1])[0] 
     
     # Await unitl ec2 acquires public ip
     ec2_ip = get_ip()
@@ -27,7 +28,6 @@ def lambda_handler(event, context):
         time.sleep(1)
         
     print("EC2 IP obtained: " + ec2_ip)
-
     
     # Run docker compose command
     res = execute_command(DOCKER_COMPOSE_COMMAND, instance_ids)
@@ -42,11 +42,22 @@ def lambda_handler(event, context):
 
     time.sleep(10)
     
-    url = f"http://{ec2_ip}:8000/birdsEyeView"
+    # Check if the API has default matrix
+    response = requests.get(DEFAULT_MATRIX_URL + "?id=" + video_id)
+    
+    use_default_matrix = response.json()["data"]["usesDefaultMatrix"]
+    
+    if use_default_matrix:
+        url = BEV_URL.format(ec2_ip=ec2_ip)
+    else:
+        url = BEV_URL_DEFAULT.format(ec2_ip=ec2_ip)
+        
+    print("URL used: " + url)
+    
     body = {
         "bucket": bucket,
         "path": key,
-        "id": os.path.splitext(key.split("/")[-1])[0]
+        "id": video_id
     }
     
     print("Before request to EC2 API")
