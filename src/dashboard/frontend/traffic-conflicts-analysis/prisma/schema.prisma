@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider      = "prisma-client-js"
     binaryTargets = ["native", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
 }
 
@@ -28,14 +28,15 @@ model Post {
 }
 
 model Video {
-    id         String  @id @default(cuid())
-    userId     String
-    name       String
-    duration   Decimal
-    progress   Int
-    resultLink String?
-    createdAt  DateTime @default(now())
-    user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id            String   @id @default(cuid())
+    userId        String
+    name          String
+    duration      Decimal
+    progress      Int
+    resultLink    String?
+    createdAt     DateTime @default(now())
+    defaultMatrix Boolean?
+    user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Necessary for Next auth

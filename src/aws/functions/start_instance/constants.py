@@ -8,6 +8,12 @@ PORT_STATUS_COMMAND = "netstat -tuln | grep :{port}"
 
 DOCKER_UP_STATUS = "running"
 
+BEV_URL = "http://{ec2_ip}:8000/getHBEV"
+
+BEV_URL_DEFAULT = "http://{ec2_ip}:8000/defaultHBEV"
+
+DEFAULT_MATRIX_URL = "https://tca.mexico.itdp.org/api/default_matrix"
+
 # Define the services and their ports
 services = {
     "bev": 8000,
