@@ -48,6 +48,8 @@ def lambda_handler(event, context):
     # Check if the API has default matrix
     response = requests.get(DEFAULT_MATRIX_URL + "?id=" + video_id)
     
+    print("Response from default matrix API: ", response.json())
+    
     use_default_matrix = response.json()["data"]["usesDefaultMatrix"]
     
     if use_default_matrix:

@@ -18,7 +18,7 @@ export default function Home() {
   const SIZE_LIMIT_MB = 300;
 
   const [isUploading, setIsUploading] = useState(false);
-  const [useDefaultMatrix, setUseDefaultMatrix] = useState(false);
+  const [useDefaultMatrix, setUseDefaultMatrix] = useState(true);
 
   const [duration, setDuration] = useState(-1);
   const [progress, setProgress] = useState(0);
