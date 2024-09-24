@@ -1,4 +1,5 @@
 // Functions for AWS services
+
 import { env } from "~/env";
 
 // S3
@@ -20,8 +21,6 @@ const s3Client = new S3Client({
   },
 });
 
-const MAX_FILE_SIZE = 1024 * 1024 * 300; // 300 MB
-
 export const generatePutPresignedUrl = async ({
   fileName,
 }: {
@@ -30,7 +29,6 @@ export const generatePutPresignedUrl = async ({
   const command = new PutObjectCommand({
     Bucket: env.IAWS_BUCKET_NAME,
     Key: fileName,
-    ContentLength: MAX_FILE_SIZE,
   });
 
   try {
@@ -57,7 +55,6 @@ export const generateGetPresignedUrl = async ({
   try {
     const url = await getSignedUrl(s3Client, command, {
       expiresIn: expiration,
-
     });
     return url;
   } catch (err) {

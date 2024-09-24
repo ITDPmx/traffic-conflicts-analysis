@@ -192,7 +192,7 @@ export default function Home() {
 
               <button
                 disabled={
-                  isLoading || !isInstanceStopped || sizeMB > SIZE_LIMIT_MB
+                  isLoading || !isInstanceStopped || sizeMB > SIZE_LIMIT_MB || progress !== 0
                 }
                 className={twMerge(
                   "rounded-lg bg-gray-400  p-2 px-12 py-3 text-center text-sm font-bold text-white md:p-3 md:text-2xl",
