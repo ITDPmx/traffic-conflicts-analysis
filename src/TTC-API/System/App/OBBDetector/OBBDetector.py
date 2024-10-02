@@ -51,8 +51,8 @@ class OBBDetector (Borg):
         load_dotenv()
         AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY") 
-        self.AWS_BUCKET_NAME = 'tca-itdp-tec-prod'
-        AWS_REGION = 'us-east-1'
+        self.AWS_BUCKET_NAME = os.getenv("AWS_BUCKET_NAME") 
+        AWS_REGION = os.getenv("AWS_REGION")
 
         self.S3_CLIENT = boto3.client(
             's3',
@@ -70,13 +70,14 @@ class OBBDetector (Borg):
 
             act = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             sig = cv2.cvtColor(frame_sig, cv2.COLOR_BGR2GRAY)
-            results_2d = self.model.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False)
-            results_obb = self.model_obb.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False)
+            results_2d = self.model.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False, classes = list(self.labels_map_coco.keys()))
+            results_obb = self.model_obb.track(frame, persist=True, conf=0.3, iou=0.7, agnostic_nms=True, verbose=False, classes = list(self.class_mapping.keys()))
             timestamp = self.video.get(cv2.CAP_PROP_POS_MSEC)
             self.process_frame(frame, frame_sig, act, sig, results_2d, results_obb, timestamp, frame_ix)
             frame_ix += 1
             frame = frame_sig.copy()
             if frame_ix % (self.frames/50) == 0: #each 2% progress
+                print("PROGRESS: ", (frame_ix/self.frames)*90)
                 response = requests.post('https://tca.mexico.itdp.org/api/progress', json={"id": self.id_video, "progress": (frame_ix/self.frames)*90 })
         
         self.video.release()

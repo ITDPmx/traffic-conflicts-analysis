@@ -21,6 +21,7 @@ services:
     volumes:
       - ./host_shared_data:/shared_data
       # - shared_data:/shared_data
+    restart: always
  
   ttc:
     build:
@@ -41,6 +42,7 @@ services:
     volumes:
       - ./host_shared_data:/shared_data
       # - shared_data:/shared_data
+    restart: always
     depends_on:
       - bev
  

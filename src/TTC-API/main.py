@@ -23,6 +23,7 @@ class FileRequest(BaseModel):
 def process_video(request: FileRequest):
     id_video = request.id_video
     ProjectDirector.go( sys.argv, id_video )
+    return {"Message": "TCC-API successed"}
 
 @app.get("/")
 def read_root():

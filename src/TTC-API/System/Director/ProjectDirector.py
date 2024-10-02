@@ -49,6 +49,7 @@ class ProjectDirector( GenericProjectDirector ):
 
         # obb detector 
         video_path = '/shared_data/bev_' + id_video + '.mp4'
+        self.ctx['__obj']['__log'].setLog( f'Procesando video {video_path}')
         model_path = "weights/yolov9e-seg.pt"
         model_obb_path = "weights/yolo_obb.pt"
         model_WHE_path = 'weights/best_width_height_estimator.pth'
@@ -78,7 +79,7 @@ class ProjectDirector( GenericProjectDirector ):
 
         #Step 03: Calling OBB visualization
 
-        output_path = '/shared_data/obb_processed.mp4'
+        output_path = '/shared_data/obb_processed_' + id_video +'.mp4'
         # output_path = 'processed_videos/video' + id_video + '.mp4'
         obbvis = OBBVisualization(video_path, output_path, df)
         obbvis.process_video()
