@@ -42,10 +42,26 @@ export const videoRouter = createTRPCRouter({
   getSignedUrl: protectedProcedure
     .input(z.object({ name: z.string(), duration: z.number(), defaultMatrix: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
+      
+      const lastVideo = await ctx.db.video.findFirst({
+        where: {
+          userId: ctx.session.user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const currentTime = new Date().getTime();
+
+      if (lastVideo && currentTime - lastVideo.createdAt.getTime() < 1000 * 60 * 5) {
+        throw new Error("Tienes que esperar por lo menos 5 minutos para subir otro video");
+      }
+
       const video = await ctx.db.video.create({
         data: {
           name: input.name,
-          progress: 0,
+          progress: 10,
           duration: input.duration,
           defaultMatrix: input.defaultMatrix,
           user: {
