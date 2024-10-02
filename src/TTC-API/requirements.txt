@@ -1,0 +1,17 @@
+python-dateutil
+pymysql
+#psycopg2==2.9.1
+psycopg2-binary
+cx-Oracle
+SQLAlchemy
+pandas
+opencv-python
+pytest
+shapely
+flow-vis
+ultralytics
+boto3
+fastapi
+uvicorn
+python-dotenv
+lapx>=0.5.2

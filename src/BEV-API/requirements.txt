@@ -1,0 +1,8 @@
+opencv_python
+numpy
+scipy
+matplotlib
+flask
+python-dotenv
+boto3
+requests

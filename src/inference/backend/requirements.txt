@@ -1,4 +1,0 @@
-fastapi==0.68.0
-ngsildclient
-uvicorn==0.14.0
-

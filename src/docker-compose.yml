@@ -1,0 +1,50 @@
+
+version: '3.8'
+ 
+services:
+  bev:
+    build:
+      context: ./BEV-API
+      dockerfile: Dockerfile
+    container_name: bev
+    ports:
+      - "8000:8000"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0  # Use GPU 0
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0  # Use GPU 0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    volumes:
+      - ./host_shared_data:/shared_data
+      # - shared_data:/shared_data
+    restart: always
+ 
+  ttc:
+    build:
+      context: ./TTC-API
+      dockerfile: Dockerfile
+    container_name: ttc
+    ports:
+      - "8001:8001"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0  # Use GPU 0
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=0  # Use GPU 0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    volumes:
+      - ./host_shared_data:/shared_data
+      # - shared_data:/shared_data
+    restart: always
+    depends_on:
+      - bev
+ 
+volumes:
+  shared_data:

@@ -3,3 +3,8 @@
 *.pt
 *.mp4
 !docs/*
+*.pth
+*.env
+*__pycache__
+*.log
+*.pyc
