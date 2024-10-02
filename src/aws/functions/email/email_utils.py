@@ -44,8 +44,11 @@ def send_email_with_oauth2(to_email, subject, link, user_name, video_name, date_
             creds = flow.run_local_server(port=0)
             
         # Save the refreshed token
-        with open(token_path, 'w') as token:
-            token.write(creds.to_json())
+        try:
+            with open(token_path, 'w') as token:
+                token.write(creds.to_json())
+        except Exception as e:
+            print(f"Error saving refreshed token: {e}")
 
     # Build Gmail service and send the email
     service = build('gmail', 'v1', credentials=creds)
