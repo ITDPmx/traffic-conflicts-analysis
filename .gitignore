@@ -1,5 +1,5 @@
 # big size files
-
+*.csv
 *.pt
 *.mp4
 *.pth
@@ -7,3 +7,4 @@
 *__pycache__
 *.log
 *.pyc
+*.png
