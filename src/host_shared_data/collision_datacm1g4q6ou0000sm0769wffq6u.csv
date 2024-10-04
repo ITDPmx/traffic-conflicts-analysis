@@ -1,2 +1,0 @@
-timestamp,id_i,x_i,y_i,vx_i,vy_i,hx_i,hy_i,length_i,width_i,velocity_i_kmh,conf_i,class_i,id_j,x_j,y_j,vx_j,vy_j,hx_j,hy_j,length_j,width_j,velocity_j_kmh,conf_j,class_j,TTC_ij,TTC_ji,severity_ij,severity_ji
-10.731,22.0,74.30263,37.34718,6.5830073,2.9857726,0.33011806,0.14972754,4.1530356,1.609918,26.795591,0.32347086,car,23.0,74.99829,42.26078,3.7400045,-1.9928678,0.18755001,-0.099936344,3.792514,1.0787145,17.47234,0.54347146,van,0.92131835,0.4614784,26.608583,26.974537
