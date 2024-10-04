@@ -22,46 +22,48 @@ html_template = """
 
 def send_email_with_oauth2(to_email, subject, link, user_name, video_name, date_str):
     creds = None
-    # token.json saves credentials after the first login
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-        
-    # If there are no (valid) credentials available, let the user log in, this generates a token.json file
-    # Otherwise refresh token using contents fron token.json
+    token_path = 'token.json'
+
+    # Check if token.json exists
+    if os.path.exists(token_path):
+        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
+
+    # Handle case where creds are invalid or expired
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                print(f"Error refreshing token: {e}")
+                # Handle the refresh error by deleting token.json
+                # os.remove(token_path)
+                print("Token has been revoked. Please re-authenticate.")
+                return "Token revoked. Please re-authenticate."
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
-        
-        # Save the credentials for the next run
-        # When running on AWS Lambda, the file system is read-only
+            
+        # Save the refreshed token
         try:
-            with open('token.json', 'w') as token:
+            with open(token_path, 'w') as token:
                 token.write(creds.to_json())
-        except Exception as error:
-            pass
+        except Exception as e:
+            print(f"Error saving refreshed token: {e}")
 
+    # Build Gmail service and send the email
     service = build('gmail', 'v1', credentials=creds)
-
+    
     message = MIMEText(html_template.format(link=link, user_name=user_name, video_name=video_name, date_str=date_str), 'html')
-
     message['to'] = to_email
     message['subject'] = subject
     raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
-
-    message = {
-        'raw': raw
-    }
-
+    message = {'raw': raw}
+    
     try:
-        message = service.users().messages().send(userId='me', body=message).execute()
-        return f'Email sent successfully: {message["id"]}'
+        sent_message = service.users().messages().send(userId='me', body=message).execute()
+        return f'Email sent successfully: {sent_message["id"]}'
     except Exception as error:
-        return "An error occurred: %s" % error
-
+        return f"An error occurred: {error}"
 
 
 if __name__ == '__main__':
@@ -69,5 +71,8 @@ if __name__ == '__main__':
     to_email = 'X@gmail.com'
     subject = 'Tus resultados están listos!'
     link = 'Lorem ipsum'
-    send_email_with_oauth2(to_email, subject, link)
+    user_name = 'Usuario'
+    video_name = 'My video'
+    date_str = '2021-09-10'
+    send_email_with_oauth2(to_email, subject, link, user_name, video_name, date_str)
 
