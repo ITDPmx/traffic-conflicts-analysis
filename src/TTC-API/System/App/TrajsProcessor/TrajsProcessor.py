@@ -88,7 +88,6 @@ class TrajsProcessor (Borg):
         group['x'] = group['x'] - avg_diff_x
         group['y'] = group['y'] - avg_diff_y
         group.set_index('timestamp', inplace=True)
-        group = group.sort_index(inplace=True)  # Ensure the index is sorted before applying rolling
         weights = np.where(group['obb_flag'], 5, 1)
         group['x'] = self.weighted_rolling_mean_series(group['x'], '800ms', weights)
         group['y'] = self.weighted_rolling_mean_series(group['y'], '800ms', weights)
