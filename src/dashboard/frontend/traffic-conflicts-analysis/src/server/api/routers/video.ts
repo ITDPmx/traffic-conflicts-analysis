@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
@@ -44,9 +45,6 @@ export const videoRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       
       const lastVideo = await ctx.db.video.findFirst({
-        where: {
-          userId: ctx.session.user.id,
-        },
         orderBy: {
           createdAt: "desc",
         },
@@ -55,7 +53,7 @@ export const videoRouter = createTRPCRouter({
       const currentTime = new Date().getTime();
 
       if (lastVideo && currentTime - lastVideo.createdAt.getTime() < 1000 * 60 * 5) {
-        throw new Error("Tienes que esperar por lo menos 5 minutos para subir otro video");
+        throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Algún usuario subió un video en los últimos 5 minutos" });;
       }
 
       const video = await ctx.db.video.create({
