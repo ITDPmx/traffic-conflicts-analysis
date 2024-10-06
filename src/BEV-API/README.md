@@ -21,6 +21,18 @@ docker run -it --gpus all -u $(id -u):$(id -g) --rm -p 8000:8000  -v $(pwd):/app
 python3 main.py
 ```
 
+Alternatively, you can run through bash files:
+
+1. Run
+```bash
+./run
+```
+
+2. Stop
+```bash
+./stop
+```
+
 ## Development
 Based on [SAmmarAbbas/birds-eye-view](https://github.com/SAmmarAbbas/birds-eye-view/tree/master)
 
