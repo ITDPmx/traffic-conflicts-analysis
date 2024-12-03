@@ -22,8 +22,13 @@ export default function Home() {
 
   const [duration, setDuration] = useState(-1);
   const [progress, setProgress] = useState(0);
+  const [videoProcessProgress, setVideoProcessProgress] = useState(0);
 
   const { data: lastFile } = api.video.getLastVideo.useQuery();
+
+  if (lastFile && lastFile.progress !== videoProcessProgress) {
+    setVideoProcessProgress(lastFile.progress);
+  }
 
   const { data: isInstanceStopped, isLoading } =
     api.aws.isInstanceStopped.useQuery();
@@ -60,7 +65,8 @@ export default function Home() {
             }
           },
         });
-        alert("El archivo se subió correctamente.");
+        setVideoProcessProgress(5);
+        alert("El archivo se subió correctamente. Y se está procesando.");
       } catch (error) {
         console.error("Error uploading file:", error);
         alert("Hubo un error al subir el archivo.");
@@ -192,11 +198,16 @@ export default function Home() {
 
               <button
                 disabled={
-                  isLoading || !isInstanceStopped || sizeMB > SIZE_LIMIT_MB || progress !== 0
+                  isLoading ||
+                  !isInstanceStopped ||
+                  sizeMB > SIZE_LIMIT_MB ||
+                  progress !== 0
                 }
                 className={twMerge(
                   "rounded-lg bg-gray-400  p-2 px-12 py-3 text-center text-sm font-bold text-white md:p-3 md:text-2xl",
-                  isInstanceStopped && (sizeMB <= SIZE_LIMIT_MB)? "bg-verde" : "",
+                  isInstanceStopped && sizeMB <= SIZE_LIMIT_MB
+                    ? "bg-verde"
+                    : "",
                 )}
                 onClick={async () => {
                   if (
@@ -275,8 +286,8 @@ export default function Home() {
                 backgroundColor: "#00A94F",
                 pathColor: "#00A94F",
               })}
-              value={lastFile?.progress ?? 0}
-              text={`${lastFile?.progress ?? 0}%`}
+              value={videoProcessProgress}
+              text={`${videoProcessProgress}%`}
             />
             <button
               disabled={!lastFile || lastFile?.progress !== 100}

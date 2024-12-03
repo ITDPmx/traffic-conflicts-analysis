@@ -43,7 +43,8 @@ def lambda_handler(event, context):
         
     print("Services in EC2 are running")
 
-    time.sleep(10)
+    # Wait for 25 seconds before calling the BEV service
+    time.sleep(50)
     
     # Check if the API has default matrix
     response = requests.get(DEFAULT_MATRIX_URL + "?id=" + video_id)
